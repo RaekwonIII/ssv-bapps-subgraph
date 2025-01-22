@@ -1,0 +1,89 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: BasedAppManager
+    network: holesky
+    source:
+      address: "0x15398DAe5d53738bF56226a7216C2396CD12cb18"
+      abi: BasedAppManager
+      startBlock: 3189766
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - BAppObligationSet
+        - BAppObligationUpdated
+        - BAppOptedIn
+        - BAppRegistered
+        - BAppTokensUpdated
+        - DelegatedBalance
+        - Initialized
+        - MaxFeeIncrementSet
+        - ObligationUpdateFinalized
+        - ObligationUpdateProposed
+        - OwnershipTransferred
+        - RemoveDelegatedBalance
+        - StrategyCreated
+        - StrategyDeposit
+        - StrategyFeeUpdateRequested
+        - StrategyFeeUpdated
+        - StrategyWithdrawal
+        - Upgraded
+        - WithdrawalETHFinalized
+        - WithdrawalETHProposed
+        - WithdrawalFinalized
+        - WithdrawalProposed
+      abis:
+        - name: BasedAppManager
+          file: ./abis/BasedAppManager.json
+      eventHandlers:
+        - event: BAppObligationSet(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleBAppObligationSet
+        - event: BAppObligationUpdated(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleBAppObligationUpdated
+        - event: BAppOptedIn(indexed uint256,indexed address)
+          handler: handleBAppOptedIn
+        - event: BAppRegistered(indexed address,indexed address,address)
+          handler: handleBAppRegistered
+        - event: BAppTokensUpdated(indexed address,address[])
+          handler: handleBAppTokensUpdated
+        - event: DelegatedBalance(indexed address,indexed address,uint32)
+          handler: handleDelegatedBalance
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: MaxFeeIncrementSet(indexed uint32)
+          handler: handleMaxFeeIncrementSet
+        - event: ObligationUpdateFinalized(indexed uint256,indexed address,indexed address,uint32)
+          handler: handleObligationUpdateFinalized
+        - event: ObligationUpdateProposed(indexed uint256,indexed address,indexed address,uint32,uint256)
+          handler: handleObligationUpdateProposed
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RemoveDelegatedBalance(indexed address,indexed address)
+          handler: handleRemoveDelegatedBalance
+        - event: StrategyCreated(indexed uint256,indexed address)
+          handler: handleStrategyCreated
+        - event: StrategyDeposit(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleStrategyDeposit
+        - event: StrategyFeeUpdateRequested(indexed uint256,address,uint32,uint32,uint256)
+          handler: handleStrategyFeeUpdateRequested
+        - event: StrategyFeeUpdated(indexed uint256,address,uint32,uint32)
+          handler: handleStrategyFeeUpdated
+        - event: StrategyWithdrawal(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleStrategyWithdrawal
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
+        - event: WithdrawalETHFinalized(indexed uint256,indexed address,uint256)
+          handler: handleWithdrawalETHFinalized
+        - event: WithdrawalETHProposed(indexed uint256,indexed address,uint256,uint256)
+          handler: handleWithdrawalETHProposed
+        - event: WithdrawalFinalized(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleWithdrawalFinalized
+        - event: WithdrawalProposed(indexed uint256,indexed address,indexed address,uint256,uint256)
+          handler: handleWithdrawalProposed
+      file: ./src/based-app-manager.ts

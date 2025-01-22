@@ -1,0 +1,8 @@
+{
+  "holesky": {
+    "BasedAppManager": {
+      "address": "0x15398DAe5d53738bF56226a7216C2396CD12cb18",
+      "startBlock": 3189766
+    }
+  }
+}
