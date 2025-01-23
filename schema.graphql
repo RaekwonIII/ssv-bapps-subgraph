@@ -1,3 +1,61 @@
+type BApp @entity(immutable: false) {
+  id: Bytes! # address
+  owner: Bytes! # address
+  tokens: [Bytes!]! # addresses
+  slashingCorrelationPenalty: BigInt!
+  sharedRiskLevel: BigInt!
+  metadataURI: String
+  strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "strategy")
+}
+
+type Strategy @entity(immutable: false) {
+  id: String! # uint256
+  strategyId: BigInt! # uint256
+  owner: Account! # address
+  fee: BigInt! # uint256
+  feeProposed: BigInt! # uint256
+  feeUpdateTime: BigInt! # uint256
+  bApps: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
+}
+
+type StrategyBAppOptIn @entity(immutable: false) {
+  id: String! # Set to `strategy.id.concat(bApp.id)`
+  strategy: Strategy!
+  bApp: BApp!
+  obligations: [Obligation!]!
+}
+
+type Obligation @entity(immutable: false) {
+  id: String! # Set to `StrategyBAppOptIn.id.concat(token.id)`
+  token: Bytes! # address
+  percentage: BigInt!
+}
+
+type StrategyTokenBalance @entity(immutable: false) {
+  id: String! # Set to `strategy.id.concat(token.id)`
+  owner: Account!
+  strategy: Strategy!
+  token: Bytes! # address
+  balance: BigInt!
+}
+
+type Account @entity(immutable: false) {
+  id: Bytes! # address
+  nonce: BigInt!
+  totalDelegatedPercentage: BigInt! # uint256
+  # TODO: to be verified, these are likely to have to be inverted
+  delegators: [Delegation!]! @derivedFrom(field: "delegator")
+  delegatee: [Delegation!]! @derivedFrom(field: "delegatee")
+  strategyTokenBalances: [StrategyTokenBalance!]! @derivedFrom(field: "owner")
+}
+
+type Delegation @entity(immutable: false) {
+  id: String! # Set to `account.id.concat(account.id)` (delegator => delegatee)
+  delegator: Account!
+  delegatee: Account!
+  percentage: BigInt!
+}
+
 type BAppObligationSet @entity(immutable: true) {
   id: Bytes!
   strategyId: BigInt! # uint256
