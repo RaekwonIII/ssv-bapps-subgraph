@@ -5,7 +5,7 @@ type BApp @entity(immutable: false) {
   slashingCorrelationPenalty: BigInt!
   sharedRiskLevel: BigInt!
   metadataURI: String
-  strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "strategy")
+  strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
 }
 
 type Strategy @entity(immutable: false) {
@@ -15,7 +15,7 @@ type Strategy @entity(immutable: false) {
   fee: BigInt! # uint256
   feeProposed: BigInt! # uint256
   feeUpdateTime: BigInt! # uint256
-  bApps: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
+  bApps: [StrategyBAppOptIn!]! @derivedFrom(field: "strategy")
 }
 
 type StrategyBAppOptIn @entity(immutable: false) {
