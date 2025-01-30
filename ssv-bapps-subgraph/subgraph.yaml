@@ -1,0 +1,86 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: BasedAppManager
+    network: mainnet
+    source:
+      address: "0xa8D6b028c6A48eCaf5558358A17824D1493D5B0a"
+      abi: BasedAppManager
+      startBlock: 3250994
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - BAppMetadataURIUpdated
+        - BAppOptedInByStrategy
+        - BAppRegistered
+        - BAppTokensCreated
+        - BAppTokensUpdated
+        - DelegationCreated
+        - DelegationRemoved
+        - DelegationUpdated
+        - Initialized
+        - MaxFeeIncrementSet
+        - ObligationCreated
+        - ObligationUpdateProposed
+        - ObligationUpdated
+        - OwnershipTransferred
+        - StrategyCreated
+        - StrategyDeposit
+        - StrategyFeeUpdateProposed
+        - StrategyFeeUpdated
+        - StrategyWithdrawal
+        - StrategyWithdrawalProposed
+        - Upgraded
+      abis:
+        - name: BasedAppManager
+          file: ./abis/BasedAppManager.json
+      eventHandlers:
+        - event: BAppMetadataURIUpdated(indexed address,string)
+          handler: handleBAppMetadataURIUpdated
+        - event: BAppOptedInByStrategy(indexed uint256,indexed address,bytes,address[],uint32[])
+          handler: handleBAppOptedInByStrategy
+        - event: BAppRegistered(indexed address,indexed address,address[],uint32[],string)
+          handler: handleBAppRegistered
+        - event: BAppTokensCreated(indexed address,address[],uint32[])
+          handler: handleBAppTokensCreated
+        - event: BAppTokensUpdated(indexed address,address[],uint32[])
+          handler: handleBAppTokensUpdated
+        - event: DelegationCreated(indexed address,indexed address,uint32)
+          handler: handleDelegationCreated
+        - event: DelegationRemoved(indexed address,indexed address)
+          handler: handleDelegationRemoved
+        - event: DelegationUpdated(indexed address,indexed address,uint32)
+          handler: handleDelegationUpdated
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: MaxFeeIncrementSet(indexed uint32)
+          handler: handleMaxFeeIncrementSet
+        - event: ObligationCreated(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleObligationCreated
+        - event: ObligationUpdateProposed(indexed uint256,indexed address,indexed address,uint32,uint256)
+          handler: handleObligationUpdateProposed
+        - event: ObligationUpdated(indexed uint256,indexed address,indexed address,uint256,bool)
+          handler: handleObligationUpdated
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: StrategyCreated(indexed uint256,indexed address,uint32)
+          handler: handleStrategyCreated
+        - event: StrategyDeposit(indexed uint256,indexed address,indexed address,uint256)
+          handler: handleStrategyDeposit
+        - event: StrategyFeeUpdateProposed(indexed uint256,address,uint32,uint32,uint256)
+          handler: handleStrategyFeeUpdateProposed
+        - event: StrategyFeeUpdated(indexed uint256,address,uint32,uint32)
+          handler: handleStrategyFeeUpdated
+        - event: StrategyWithdrawal(indexed uint256,indexed address,indexed address,uint256,bool)
+          handler: handleStrategyWithdrawal
+        - event: StrategyWithdrawalProposed(indexed uint256,indexed address,indexed address,uint256,uint256)
+          handler: handleStrategyWithdrawalProposed
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
+      file: ./src/based-app-manager.ts
