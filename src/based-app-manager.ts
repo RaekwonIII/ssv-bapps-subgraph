@@ -1,80 +1,59 @@
+import { Bytes } from "@graphprotocol/graph-ts"
 import {
-  BAppObligationSet as BAppObligationSetEvent,
-  BAppObligationUpdated as BAppObligationUpdatedEvent,
-  BAppOptedIn as BAppOptedInEvent,
+  BAppMetadataURIUpdated as BAppMetadataURIUpdatedEvent,
+  BAppOptedInByStrategy as BAppOptedInByStrategyEvent,
   BAppRegistered as BAppRegisteredEvent,
+  BAppTokensCreated as BAppTokensCreatedEvent,
   BAppTokensUpdated as BAppTokensUpdatedEvent,
-  DelegatedBalance as DelegatedBalanceEvent,
+  DelegationCreated as DelegationCreatedEvent,
+  DelegationRemoved as DelegationRemovedEvent,
+  DelegationUpdated as DelegationUpdatedEvent,
   Initialized as InitializedEvent,
   MaxFeeIncrementSet as MaxFeeIncrementSetEvent,
-  ObligationUpdateFinalized as ObligationUpdateFinalizedEvent,
+  ObligationCreated as ObligationCreatedEvent,
   ObligationUpdateProposed as ObligationUpdateProposedEvent,
+  ObligationUpdated as ObligationUpdatedEvent,
   OwnershipTransferred as OwnershipTransferredEvent,
-  RemoveDelegatedBalance as RemoveDelegatedBalanceEvent,
   StrategyCreated as StrategyCreatedEvent,
   StrategyDeposit as StrategyDepositEvent,
-  StrategyFeeUpdateRequested as StrategyFeeUpdateRequestedEvent,
+  StrategyFeeUpdateProposed as StrategyFeeUpdateProposedEvent,
   StrategyFeeUpdated as StrategyFeeUpdatedEvent,
   StrategyWithdrawal as StrategyWithdrawalEvent,
-  Upgraded as UpgradedEvent,
-  WithdrawalETHFinalized as WithdrawalETHFinalizedEvent,
-  WithdrawalETHProposed as WithdrawalETHProposedEvent,
-  WithdrawalFinalized as WithdrawalFinalizedEvent,
-  WithdrawalProposed as WithdrawalProposedEvent
+  StrategyWithdrawalProposed as StrategyWithdrawalProposedEvent,
+  Upgraded as UpgradedEvent
 } from "../generated/BasedAppManager/BasedAppManager"
 import {
-  BApp,
-  BAppObligationSet,
-  BAppObligationUpdated,
-  BAppOptedIn,
+  BAppMetadataURIUpdated,
+  BAppOptedInByStrategy,
   BAppRegistered,
+  BAppTokensCreated,
   BAppTokensUpdated,
-  DelegatedBalance,
-  Delegation,
+  DelegationCreated,
+  DelegationRemoved,
+  DelegationUpdated,
   Initialized,
   MaxFeeIncrementSet,
-  ObligationUpdateFinalized,
+  ObligationCreated,
   ObligationUpdateProposed,
+  ObligationUpdated,
   OwnershipTransferred,
-  RemoveDelegatedBalance,
   StrategyCreated,
   StrategyDeposit,
-  StrategyFeeUpdateRequested,
+  StrategyFeeUpdateProposed,
   StrategyFeeUpdated,
   StrategyWithdrawal,
-  Upgraded,
-  WithdrawalETHFinalized,
-  WithdrawalETHProposed,
-  WithdrawalFinalized,
-  WithdrawalProposed
+  StrategyWithdrawalProposed,
+  Upgraded
 } from "../generated/schema"
 
-export function handleBAppObligationSet(event: BAppObligationSetEvent): void {
-  let entity = new BAppObligationSet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.strategyId = event.params.strategyId
-  entity.bApp = event.params.bApp
-  entity.token = event.params.token
-  entity.obligationPercentage = event.params.obligationPercentage
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleBAppObligationUpdated(
-  event: BAppObligationUpdatedEvent
+export function handleBAppMetadataURIUpdated(
+  event: BAppMetadataURIUpdatedEvent
 ): void {
-  let entity = new BAppObligationUpdated(
+  let entity = new BAppMetadataURIUpdated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.strategyId = event.params.strategyId
-  entity.bApp = event.params.bApp
-  entity.token = event.params.token
-  entity.obligationPercentage = event.params.obligationPercentage
+  entity.bAppAddress = event.params.bAppAddress
+  entity.metadataURI = event.params.metadataURI
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -83,12 +62,17 @@ export function handleBAppObligationUpdated(
   entity.save()
 }
 
-export function handleBAppOptedIn(event: BAppOptedInEvent): void {
-  let entity = new BAppOptedIn(
+export function handleBAppOptedInByStrategy(
+  event: BAppOptedInByStrategyEvent
+): void {
+  let entity = new BAppOptedInByStrategy(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.strategyId = event.params.strategyId
   entity.bApp = event.params.bApp
+  entity.data = event.params.data
+  entity.tokens = changetype<Bytes[]>(event.params.tokens)
+  entity.obligationPercentages = event.params.obligationPercentages
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -103,22 +87,30 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
   )
   entity.bAppAddress = event.params.bAppAddress
   entity.owner = event.params.owner
-  entity.from = event.params.from
+  entity.tokens = changetype<Bytes[]>(event.params.tokens)
+  entity.sharedRiskLevel = event.params.sharedRiskLevel
+  entity.metadataURI = event.params.metadataURI
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+}
 
-  let bApp = BApp.load(event.params.bAppAddress)
-  if (!bApp) {
-    bApp = new BApp(event.params.bAppAddress)
-  }
-  bApp.owner = event.params.owner
-  // bApp.tokens = event.params.tokens
-  // bApp.sharedRiskLevel = event.params.sharedRiskLevel
-  bApp.save()
+export function handleBAppTokensCreated(event: BAppTokensCreatedEvent): void {
+  let entity = new BAppTokensCreated(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.bAppAddress = event.params.bAppAddress
+  entity.tokens = changetype<Bytes[]>(event.params.tokens)
+  entity.sharedRiskLevels = event.params.sharedRiskLevels
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
 }
 
 export function handleBAppTokensUpdated(event: BAppTokensUpdatedEvent): void {
@@ -126,29 +118,18 @@ export function handleBAppTokensUpdated(event: BAppTokensUpdatedEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.bAppAddress = event.params.bAppAddress
-  entity.tokens = event.params.tokens
+  entity.tokens = changetype<Bytes[]>(event.params.tokens)
+  entity.sharedRiskLevels = event.params.sharedRiskLevels
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
   entity.save()
-
-  let bApp = BApp.load(event.params.bAppAddress)
-  if (!bApp) {
-    bApp = new BApp(event.params.bAppAddress)
-  }
-  let tokens = bApp.tokens
-  for (var i = 0; i < event.params.tokens.length; i++) {
-    // trusting that the contract reverses tx if token already exists. See `TokenAlreadyAddedToBApp` error
-    tokens.push(event.params.tokens[i])
-  }
-  bApp.tokens = tokens
-  bApp.save()
 }
 
-export function handleDelegatedBalance(event: DelegatedBalanceEvent): void {
-  let entity = new DelegatedBalance(
+export function handleDelegationCreated(event: DelegationCreatedEvent): void {
+  let entity = new DelegationCreated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.delegator = event.params.delegator
@@ -160,14 +141,35 @@ export function handleDelegatedBalance(event: DelegatedBalanceEvent): void {
   entity.transactionHash = event.transaction.hash
 
   entity.save()
+}
 
-  let delegation = Delegation.load(`${event.params.delegator.toHexString()}-${event.params.receiver.toHexString()}`)
-  if (!delegation) {
-    delegation = new Delegation(`${event.params.delegator.toHexString()}-${event.params.receiver.toHexString()}`)
-  }
-  delegation.delegator = event.params.delegator
-  delegation.receiver = event.params.receiver
-  delegation.save()
+export function handleDelegationRemoved(event: DelegationRemovedEvent): void {
+  let entity = new DelegationRemoved(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.delegator = event.params.delegator
+  entity.receiver = event.params.receiver
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleDelegationUpdated(event: DelegationUpdatedEvent): void {
+  let entity = new DelegationUpdated(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.delegator = event.params.delegator
+  entity.receiver = event.params.receiver
+  entity.percentage = event.params.percentage
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
 }
 
 export function handleInitialized(event: InitializedEvent): void {
@@ -196,16 +198,14 @@ export function handleMaxFeeIncrementSet(event: MaxFeeIncrementSetEvent): void {
   entity.save()
 }
 
-export function handleObligationUpdateFinalized(
-  event: ObligationUpdateFinalizedEvent
-): void {
-  let entity = new ObligationUpdateFinalized(
+export function handleObligationCreated(event: ObligationCreatedEvent): void {
+  let entity = new ObligationCreated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.strategyId = event.params.strategyId
-  entity.account = event.params.account
+  entity.bApp = event.params.bApp
   entity.token = event.params.token
-  entity.percentage = event.params.percentage
+  entity.obligationPercentage = event.params.obligationPercentage
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -233,6 +233,23 @@ export function handleObligationUpdateProposed(
   entity.save()
 }
 
+export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
+  let entity = new ObligationUpdated(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.strategyId = event.params.strategyId
+  entity.bApp = event.params.bApp
+  entity.token = event.params.token
+  entity.obligationPercentage = event.params.obligationPercentage
+  entity.isFast = event.params.isFast
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
 export function handleOwnershipTransferred(
   event: OwnershipTransferredEvent
 ): void {
@@ -249,28 +266,13 @@ export function handleOwnershipTransferred(
   entity.save()
 }
 
-export function handleRemoveDelegatedBalance(
-  event: RemoveDelegatedBalanceEvent
-): void {
-  let entity = new RemoveDelegatedBalance(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.delegator = event.params.delegator
-  entity.receiver = event.params.receiver
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
 export function handleStrategyCreated(event: StrategyCreatedEvent): void {
   let entity = new StrategyCreated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.strategyId = event.params.strategyId
   entity.owner = event.params.owner
+  entity.fee = event.params.fee
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -295,10 +297,10 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   entity.save()
 }
 
-export function handleStrategyFeeUpdateRequested(
-  event: StrategyFeeUpdateRequestedEvent
+export function handleStrategyFeeUpdateProposed(
+  event: StrategyFeeUpdateProposedEvent
 ): void {
-  let entity = new StrategyFeeUpdateRequested(
+  let entity = new StrategyFeeUpdateProposed(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.strategyId = event.params.strategyId
@@ -338,6 +340,26 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   entity.contributor = event.params.contributor
   entity.token = event.params.token
   entity.amount = event.params.amount
+  entity.isFast = event.params.isFast
+
+  entity.blockNumber = event.block.number
+  entity.blockTimestamp = event.block.timestamp
+  entity.transactionHash = event.transaction.hash
+
+  entity.save()
+}
+
+export function handleStrategyWithdrawalProposed(
+  event: StrategyWithdrawalProposedEvent
+): void {
+  let entity = new StrategyWithdrawalProposed(
+    event.transaction.hash.concatI32(event.logIndex.toI32())
+  )
+  entity.strategyId = event.params.strategyId
+  entity.account = event.params.account
+  entity.token = event.params.token
+  entity.amount = event.params.amount
+  entity.finalizeTime = event.params.finalizeTime
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -351,76 +373,6 @@ export function handleUpgraded(event: UpgradedEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.implementation = event.params.implementation
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdrawalETHFinalized(
-  event: WithdrawalETHFinalizedEvent
-): void {
-  let entity = new WithdrawalETHFinalized(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.strategyId = event.params.strategyId
-  entity.account = event.params.account
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdrawalETHProposed(
-  event: WithdrawalETHProposedEvent
-): void {
-  let entity = new WithdrawalETHProposed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.strategyId = event.params.strategyId
-  entity.account = event.params.account
-  entity.amount = event.params.amount
-  entity.finalizeTime = event.params.finalizeTime
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdrawalFinalized(
-  event: WithdrawalFinalizedEvent
-): void {
-  let entity = new WithdrawalFinalized(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.strategyId = event.params.strategyId
-  entity.account = event.params.account
-  entity.token = event.params.token
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdrawalProposed(event: WithdrawalProposedEvent): void {
-  let entity = new WithdrawalProposed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.strategyId = event.params.strategyId
-  entity.account = event.params.account
-  entity.token = event.params.token
-  entity.amount = event.params.amount
-  entity.finalizeTime = event.params.finalizeTime
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

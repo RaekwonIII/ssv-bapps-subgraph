@@ -1,1187 +1,1218 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  { "type": "constructor", "inputs": [], "stateMutability": "nonpayable" },
   {
-    "inputs": [
-      { "internalType": "address", "name": "target", "type": "address" }
-    ],
-    "name": "AddressEmptyCode",
-    "type": "error"
-  },
-  { "inputs": [], "name": "BAppAlreadyOptedIn", "type": "error" },
-  { "inputs": [], "name": "BAppAlreadyRegistered", "type": "error" },
-  { "inputs": [], "name": "BAppNotOptedIn", "type": "error" },
-  { "inputs": [], "name": "DelegationAlreadyExists", "type": "error" },
-  { "inputs": [], "name": "DelegationDoesNotExist", "type": "error" },
-  { "inputs": [], "name": "DelegationExistsWithSameValue", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "implementation", "type": "address" }
-    ],
-    "name": "ERC1967InvalidImplementation",
-    "type": "error"
-  },
-  { "inputs": [], "name": "ERC1967NonPayable", "type": "error" },
-  { "inputs": [], "name": "ExceedingPercentageUpdate", "type": "error" },
-  { "inputs": [], "name": "FailedCall", "type": "error" },
-  { "inputs": [], "name": "FeeAlreadySet", "type": "error" },
-  { "inputs": [], "name": "FeeTimelockNotElapsed", "type": "error" },
-  { "inputs": [], "name": "FeeUpdateExpired", "type": "error" },
-  { "inputs": [], "name": "InsufficientBalance", "type": "error" },
-  { "inputs": [], "name": "InvalidAmount", "type": "error" },
-  { "inputs": [], "name": "InvalidDelegationFee", "type": "error" },
-  { "inputs": [], "name": "InvalidInitialization", "type": "error" },
-  { "inputs": [], "name": "InvalidPercentage", "type": "error" },
-  { "inputs": [], "name": "InvalidPercentageIncrement", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "caller", "type": "address" },
-      { "internalType": "address", "name": "expectedOwner", "type": "address" }
-    ],
-    "name": "InvalidStrategyOwner",
-    "type": "error"
-  },
-  { "inputs": [], "name": "InvalidToken", "type": "error" },
-  { "inputs": [], "name": "NoPendingFeeUpdate", "type": "error" },
-  { "inputs": [], "name": "NoPendingObligationUpdate", "type": "error" },
-  { "inputs": [], "name": "NoPendingWithdrawal", "type": "error" },
-  { "inputs": [], "name": "NoPendingWithdrawalETH", "type": "error" },
-  { "inputs": [], "name": "NotInitializing", "type": "error" },
-  { "inputs": [], "name": "ObligationAlreadySet", "type": "error" },
-  { "inputs": [], "name": "ObligationTimelockNotElapsed", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "owner", "type": "address" }
-    ],
-    "name": "OwnableInvalidOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
-    "name": "OwnableUnauthorizedAccount",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
-    "name": "SafeERC20FailedOperation",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
-    "name": "TokenAlreadyAddedToBApp",
-    "type": "error"
-  },
-  { "inputs": [], "name": "TokenIsUsedByTheBApp", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
-    "name": "TokenNoTSupportedByBApp",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "TokensLengthNotMatchingPercentages",
-    "type": "error"
-  },
-  { "inputs": [], "name": "UUPSUnauthorizedCallContext", "type": "error" },
-  {
-    "inputs": [
-      { "internalType": "bytes32", "name": "slot", "type": "bytes32" }
-    ],
-    "name": "UUPSUnsupportedProxiableUUID",
-    "type": "error"
-  },
-  { "inputs": [], "name": "UpdateObligationExpired", "type": "error" },
-  { "inputs": [], "name": "WithdrawalExpired", "type": "error" },
-  { "inputs": [], "name": "WithdrawalTimelockNotElapsed", "type": "error" },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bApp",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "obligationPercentage",
-        "type": "uint256"
-      }
-    ],
-    "name": "BAppObligationSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bApp",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "obligationPercentage",
-        "type": "uint256"
-      }
-    ],
-    "name": "BAppObligationUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bApp",
-        "type": "address"
-      }
-    ],
-    "name": "BAppOptedIn",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bAppAddress",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "from",
-        "type": "address"
-      }
-    ],
-    "name": "BAppRegistered",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bAppAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
-      }
-    ],
-    "name": "BAppTokensUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "delegator",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "percentage",
-        "type": "uint32"
-      }
-    ],
-    "name": "DelegatedBalance",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint64",
-        "name": "version",
-        "type": "uint64"
-      }
-    ],
-    "name": "Initialized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint32",
-        "name": "newMaxFeeIncrement",
-        "type": "uint32"
-      }
-    ],
-    "name": "MaxFeeIncrementSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "percentage",
-        "type": "uint32"
-      }
-    ],
-    "name": "ObligationUpdateFinalized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "percentage",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "finalizeTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "ObligationUpdateProposed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "previousOwner",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "delegator",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "receiver",
-        "type": "address"
-      }
-    ],
-    "name": "RemoveDelegatedBalance",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      }
-    ],
-    "name": "StrategyCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "contributor",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "StrategyDeposit",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "proposedFee",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "fee",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "expirationTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "StrategyFeeUpdateRequested",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "fee",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32",
-        "name": "oldFee",
-        "type": "uint32"
-      }
-    ],
-    "name": "StrategyFeeUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "contributor",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "StrategyWithdrawal",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "implementation",
-        "type": "address"
-      }
-    ],
-    "name": "Upgraded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "WithdrawalETHFinalized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "finalizeTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "WithdrawalETHProposed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "WithdrawalFinalized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "strategyId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "finalizeTime",
-        "type": "uint256"
-      }
-    ],
-    "name": "WithdrawalProposed",
-    "type": "event"
-  },
-  {
-    "inputs": [],
+    "type": "function",
     "name": "ETH_ADDRESS",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "FEE_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "FEE_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "MAX_PERCENTAGE",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint32", "internalType": "uint32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "OBLIGATION_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "OBLIGATION_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "UPGRADE_INTERFACE_VERSION",
-    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "string", "internalType": "string" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "WITHDRAWAL_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "WITHDRAWAL_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "account", "type": "address" },
-      { "internalType": "address", "name": "bApp", "type": "address" }
-    ],
+    "type": "function",
     "name": "accountBAppStrategy",
-    "outputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "bApp", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "bAppAddress", "type": "address" },
-      { "internalType": "address[]", "name": "tokens", "type": "address[]" }
-    ],
+    "type": "function",
     "name": "addTokensToBApp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "address", "name": "bApp", "type": "address" }
-    ],
-    "name": "bApps",
-    "outputs": [
-      { "internalType": "address", "name": "owner", "type": "address" },
-      { "internalType": "uint32", "name": "sharedRiskLevel", "type": "uint32" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "tokens", "type": "address[]", "internalType": "address[]" },
       {
-        "internalType": "uint32",
-        "name": "obligationPercentage",
-        "type": "uint32"
+        "name": "sharedRiskLevels",
+        "type": "uint32[]",
+        "internalType": "uint32[]"
       }
     ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "bAppOwners",
+    "inputs": [
+      { "name": "bApp", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "owner", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "bAppTokens",
+    "inputs": [
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "value", "type": "uint32", "internalType": "uint32" },
+      { "name": "isSet", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "createObligation",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" },
+      {
+        "name": "obligationPercentage",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [{ "internalType": "uint32", "name": "fee", "type": "uint32" }],
+    "type": "function",
     "name": "createStrategy",
+    "inputs": [{ "name": "fee", "type": "uint32", "internalType": "uint32" }],
     "outputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
     ],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "receiver", "type": "address" },
-      { "internalType": "uint32", "name": "percentage", "type": "uint32" }
-    ],
+    "type": "function",
     "name": "delegateBalance",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "percentage", "type": "uint32", "internalType": "uint32" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "delegator", "type": "address" },
-      { "internalType": "address", "name": "account", "type": "address" }
-    ],
+    "type": "function",
     "name": "delegations",
-    "outputs": [
-      { "internalType": "uint32", "name": "percentage", "type": "uint32" }
+    "inputs": [
+      { "name": "delegator", "type": "address", "internalType": "address" },
+      { "name": "account", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "percentage", "type": "uint32", "internalType": "uint32" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "contract IERC20", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "depositERC20",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "contract IERC20" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "depositETH",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    "stateMutability": "payable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      {
-        "internalType": "uint32",
-        "name": "obligationPercentage",
-        "type": "uint32"
-      }
-    ],
+    "type": "function",
     "name": "fastUpdateObligation",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" },
+      {
+        "name": "obligationPercentage",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "contract IERC20", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "fastWithdrawERC20",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "contract IERC20" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "fastWithdrawETH",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "finalizeFeeUpdate",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "finalizeUpdateObligation",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "contract IERC20", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "finalizeWithdrawal",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "contract IERC20" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "finalizeWithdrawalETH",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "bAppAddress", "type": "address" }
-    ],
-    "name": "getBAppTokens",
-    "outputs": [
-      { "internalType": "address[]", "name": "", "type": "address[]" }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint32", "name": "_maxFeeIncrement", "type": "uint32" }
-    ],
+    "type": "function",
     "name": "initialize",
+    "inputs": [
+      { "name": "owner", "type": "address", "internalType": "address" },
+      { "name": "_maxFeeIncrement", "type": "uint32", "internalType": "uint32" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "maxFeeIncrement",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
-    "stateMutability": "view",
-    "type": "function"
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint32", "internalType": "uint32" }],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "address", "name": "bApp", "type": "address" }
-    ],
+    "type": "function",
     "name": "obligationRequests",
-    "outputs": [
-      { "internalType": "uint32", "name": "percentage", "type": "uint32" },
-      { "internalType": "uint256", "name": "requestTime", "type": "uint256" }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "address" },
+      { "name": "bApp", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "percentage", "type": "uint32", "internalType": "uint32" },
+      { "name": "requestTime", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "obligations",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "obligationPercentage",
-        "type": "uint32"
-      }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "percentage", "type": "uint32", "internalType": "uint32" },
+      { "name": "isSet", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" }
-    ],
-    "name": "obligationsCounter",
-    "outputs": [
-      {
-        "internalType": "uint32",
-        "name": "numberOfObligations",
-        "type": "uint32"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address[]", "name": "tokens", "type": "address[]" },
-      {
-        "internalType": "uint32[]",
-        "name": "obligationPercentages",
-        "type": "uint32[]"
-      }
-    ],
+    "type": "function",
     "name": "optInToBApp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "uint32", "name": "proposedFee", "type": "uint32" }
-    ],
-    "name": "proposeFeeUpdate",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" },
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "tokens", "type": "address[]", "internalType": "address[]" },
       {
-        "internalType": "uint32",
+        "name": "obligationPercentages",
+        "type": "uint32[]",
+        "internalType": "uint32[]"
+      },
+      { "name": "data", "type": "bytes", "internalType": "bytes" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "owner",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "proposeFeeUpdate",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "proposedFee", "type": "uint32", "internalType": "uint32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "proposeUpdateObligation",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" },
+      {
         "name": "obligationPercentage",
-        "type": "uint32"
+        "type": "uint32",
+        "internalType": "uint32"
       }
     ],
-    "name": "proposeUpdateObligation",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "proposeWithdrawal",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "address" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "proposeWithdrawalETH",
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+    ],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [],
+    "type": "function",
     "name": "proxiableUUID",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "owner", "type": "address" },
-      { "internalType": "address", "name": "bAppAddress", "type": "address" },
-      { "internalType": "address[]", "name": "tokens", "type": "address[]" },
-      { "internalType": "uint32", "name": "sharedRiskLevel", "type": "uint32" }
-    ],
-    "name": "registerBApp",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "receiver", "type": "address" }
-    ],
-    "name": "removeDelegatedBalance",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "registerBApp",
+    "inputs": [
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "tokens", "type": "address[]", "internalType": "address[]" },
+      {
+        "name": "sharedRiskLevels",
+        "type": "uint32[]",
+        "internalType": "uint32[]"
+      },
+      { "name": "metadataURI", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "removeDelegatedBalance",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "renounceOwnership",
+    "inputs": [],
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
-    ],
+    "type": "function",
     "name": "strategies",
-    "outputs": [
-      { "internalType": "address", "name": "owner", "type": "address" },
-      { "internalType": "uint32", "name": "fee", "type": "uint32" },
-      { "internalType": "uint32", "name": "feeProposed", "type": "uint32" },
-      { "internalType": "uint256", "name": "feeUpdateTime", "type": "uint256" }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "owner", "type": "address", "internalType": "address" },
+      { "name": "fee", "type": "uint32", "internalType": "uint32" },
+      { "name": "feeProposed", "type": "uint32", "internalType": "uint32" },
+      { "name": "feeUpdateTime", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "account", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "strategyTokenBalances",
-    "outputs": [
-      { "internalType": "uint256", "name": "balance", "type": "uint256" }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "balance", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "delegator", "type": "address" }
-    ],
+    "type": "function",
     "name": "totalDelegatedPercentage",
+    "inputs": [
+      { "name": "delegator", "type": "address", "internalType": "address" }
+    ],
     "outputs": [
-      { "internalType": "uint32", "name": "totalPercentage", "type": "uint32" }
+      { "name": "totalPercentage", "type": "uint32", "internalType": "uint32" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "newOwner", "type": "address" }
-    ],
+    "type": "function",
     "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
-      { "internalType": "address", "name": "receiver", "type": "address" },
-      { "internalType": "uint32", "name": "percentage", "type": "uint32" }
+      { "name": "newOwner", "type": "address", "internalType": "address" }
     ],
-    "name": "updateDelegatedBalance",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "nonpayable"
   },
   {
+    "type": "function",
+    "name": "updateBAppTokens",
+    "inputs": [
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "tokens", "type": "address[]", "internalType": "address[]" },
+      {
+        "name": "sharedRiskLevels",
+        "type": "uint32[]",
+        "internalType": "uint32[]"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateDelegatedBalance",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "percentage", "type": "uint32", "internalType": "uint32" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateMetadataURI",
+    "inputs": [
+      { "name": "bApp", "type": "address", "internalType": "address" },
+      { "name": "metadataURI", "type": "string", "internalType": "string" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "upgradeToAndCall",
     "inputs": [
       {
-        "internalType": "address",
         "name": "newImplementation",
-        "type": "address"
+        "type": "address",
+        "internalType": "address"
       },
-      { "internalType": "bytes", "name": "data", "type": "bytes" }
+      { "name": "data", "type": "bytes", "internalType": "bytes" }
     ],
-    "name": "upgradeToAndCall",
     "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    "stateMutability": "payable"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "usedTokens",
-    "outputs": [
-      { "internalType": "uint32", "name": "bAppsCounter", "type": "uint32" }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
+    "outputs": [
+      { "name": "bAppsCounter", "type": "uint32", "internalType": "uint32" }
+    ],
+    "stateMutability": "view"
   },
   {
-    "inputs": [
-      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
-      { "internalType": "address", "name": "account", "type": "address" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
+    "type": "function",
     "name": "withdrawalRequests",
-    "outputs": [
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint256", "name": "requestTime", "type": "uint256" }
+    "inputs": [
+      { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
+      { "name": "account", "type": "address", "internalType": "address" },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  }
+    "outputs": [
+      { "name": "amount", "type": "uint256", "internalType": "uint256" },
+      { "name": "requestTime", "type": "uint256", "internalType": "uint256" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "BAppMetadataURIUpdated",
+    "inputs": [
+      {
+        "name": "bAppAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "metadataURI",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BAppOptedInByStrategy",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bApp",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "data",
+        "type": "bytes",
+        "indexed": false,
+        "internalType": "bytes"
+      },
+      {
+        "name": "tokens",
+        "type": "address[]",
+        "indexed": false,
+        "internalType": "address[]"
+      },
+      {
+        "name": "obligationPercentages",
+        "type": "uint32[]",
+        "indexed": false,
+        "internalType": "uint32[]"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BAppRegistered",
+    "inputs": [
+      {
+        "name": "bAppAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokens",
+        "type": "address[]",
+        "indexed": false,
+        "internalType": "address[]"
+      },
+      {
+        "name": "sharedRiskLevel",
+        "type": "uint32[]",
+        "indexed": false,
+        "internalType": "uint32[]"
+      },
+      {
+        "name": "metadataURI",
+        "type": "string",
+        "indexed": false,
+        "internalType": "string"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BAppTokensCreated",
+    "inputs": [
+      {
+        "name": "bAppAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokens",
+        "type": "address[]",
+        "indexed": false,
+        "internalType": "address[]"
+      },
+      {
+        "name": "sharedRiskLevels",
+        "type": "uint32[]",
+        "indexed": false,
+        "internalType": "uint32[]"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "BAppTokensUpdated",
+    "inputs": [
+      {
+        "name": "bAppAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "tokens",
+        "type": "address[]",
+        "indexed": false,
+        "internalType": "address[]"
+      },
+      {
+        "name": "sharedRiskLevels",
+        "type": "uint32[]",
+        "indexed": false,
+        "internalType": "uint32[]"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegationCreated",
+    "inputs": [
+      {
+        "name": "delegator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "receiver",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "percentage",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegationRemoved",
+    "inputs": [
+      {
+        "name": "delegator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "receiver",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "DelegationUpdated",
+    "inputs": [
+      {
+        "name": "delegator",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "receiver",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "percentage",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Initialized",
+    "inputs": [
+      {
+        "name": "version",
+        "type": "uint64",
+        "indexed": false,
+        "internalType": "uint64"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "MaxFeeIncrementSet",
+    "inputs": [
+      {
+        "name": "newMaxFeeIncrement",
+        "type": "uint32",
+        "indexed": true,
+        "internalType": "uint32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ObligationCreated",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bApp",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "obligationPercentage",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ObligationUpdateProposed",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "percentage",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "finalizeTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ObligationUpdated",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "bApp",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "obligationPercentage",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isFast",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "OwnershipTransferred",
+    "inputs": [
+      {
+        "name": "previousOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newOwner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyCreated",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "fee",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyDeposit",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "contributor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyFeeUpdateProposed",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "proposedFee",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "fee",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "expirationTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyFeeUpdated",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "fee",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      },
+      {
+        "name": "oldFee",
+        "type": "uint32",
+        "indexed": false,
+        "internalType": "uint32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyWithdrawal",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "contributor",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "isFast",
+        "type": "bool",
+        "indexed": false,
+        "internalType": "bool"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "StrategyWithdrawalProposed",
+    "inputs": [
+      {
+        "name": "strategyId",
+        "type": "uint256",
+        "indexed": true,
+        "internalType": "uint256"
+      },
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "token",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "finalizeTime",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Upgraded",
+    "inputs": [
+      {
+        "name": "implementation",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "AddressEmptyCode",
+    "inputs": [
+      { "name": "target", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "BAppAlreadyOptedIn", "inputs": [] },
+  { "type": "error", "name": "BAppAlreadyRegistered", "inputs": [] },
+  { "type": "error", "name": "BAppNotOptedIn", "inputs": [] },
+  { "type": "error", "name": "DelegationAlreadyExists", "inputs": [] },
+  { "type": "error", "name": "DelegationDoesNotExist", "inputs": [] },
+  { "type": "error", "name": "DelegationExistsWithSameValue", "inputs": [] },
+  {
+    "type": "error",
+    "name": "ERC1967InvalidImplementation",
+    "inputs": [
+      { "name": "implementation", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "ERC1967NonPayable", "inputs": [] },
+  { "type": "error", "name": "EmptyTokenList", "inputs": [] },
+  { "type": "error", "name": "ExceedingPercentageUpdate", "inputs": [] },
+  { "type": "error", "name": "FailedCall", "inputs": [] },
+  { "type": "error", "name": "FeeAlreadySet", "inputs": [] },
+  { "type": "error", "name": "FeeTimelockNotElapsed", "inputs": [] },
+  { "type": "error", "name": "FeeUpdateExpired", "inputs": [] },
+  { "type": "error", "name": "InsufficientBalance", "inputs": [] },
+  { "type": "error", "name": "InvalidAmount", "inputs": [] },
+  {
+    "type": "error",
+    "name": "InvalidBAppOwner",
+    "inputs": [
+      { "name": "caller", "type": "address", "internalType": "address" },
+      { "name": "expectedOwner", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "InvalidInitialization", "inputs": [] },
+  { "type": "error", "name": "InvalidMaxFeeIncrement", "inputs": [] },
+  { "type": "error", "name": "InvalidPercentage", "inputs": [] },
+  { "type": "error", "name": "InvalidPercentageIncrement", "inputs": [] },
+  { "type": "error", "name": "InvalidStrategyFee", "inputs": [] },
+  {
+    "type": "error",
+    "name": "InvalidStrategyOwner",
+    "inputs": [
+      { "name": "caller", "type": "address", "internalType": "address" },
+      { "name": "expectedOwner", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "InvalidToken", "inputs": [] },
+  { "type": "error", "name": "LengthsNotMatching", "inputs": [] },
+  { "type": "error", "name": "NoPendingFeeUpdate", "inputs": [] },
+  { "type": "error", "name": "NoPendingObligationUpdate", "inputs": [] },
+  { "type": "error", "name": "NoPendingWithdrawal", "inputs": [] },
+  { "type": "error", "name": "NoPendingWithdrawalETH", "inputs": [] },
+  { "type": "error", "name": "NotInitializing", "inputs": [] },
+  { "type": "error", "name": "ObligationAlreadySet", "inputs": [] },
+  { "type": "error", "name": "ObligationHasNotBeenCreated", "inputs": [] },
+  { "type": "error", "name": "ObligationTimelockNotElapsed", "inputs": [] },
+  {
+    "type": "error",
+    "name": "OwnableInvalidOwner",
+    "inputs": [
+      { "name": "owner", "type": "address", "internalType": "address" }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "OwnableUnauthorizedAccount",
+    "inputs": [
+      { "name": "account", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "ReentrancyGuardReentrantCall", "inputs": [] },
+  {
+    "type": "error",
+    "name": "SafeERC20FailedOperation",
+    "inputs": [
+      { "name": "token", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "SharedRiskLevelAlreadySet", "inputs": [] },
+  {
+    "type": "error",
+    "name": "TokenAlreadyAddedToBApp",
+    "inputs": [
+      { "name": "token", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "TokenIsUsedByTheBApp", "inputs": [] },
+  {
+    "type": "error",
+    "name": "TokenNoTSupportedByBApp",
+    "inputs": [
+      { "name": "token", "type": "address", "internalType": "address" }
+    ]
+  },
+  { "type": "error", "name": "UUPSUnauthorizedCallContext", "inputs": [] },
+  {
+    "type": "error",
+    "name": "UUPSUnsupportedProxiableUUID",
+    "inputs": [{ "name": "slot", "type": "bytes32", "internalType": "bytes32" }]
+  },
+  { "type": "error", "name": "UpdateObligationExpired", "inputs": [] },
+  { "type": "error", "name": "WithdrawalExpired", "inputs": [] },
+  { "type": "error", "name": "WithdrawalTimelockNotElapsed", "inputs": [] },
+  { "type": "error", "name": "ZeroAddressNotAllowed", "inputs": [] }
 ]

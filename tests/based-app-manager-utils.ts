@@ -1,121 +1,99 @@
 import { newMockEvent } from "matchstick-as"
-import { ethereum, BigInt, Address } from "@graphprotocol/graph-ts"
+import { ethereum, Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
-  BAppObligationSet,
-  BAppObligationUpdated,
-  BAppOptedIn,
+  BAppMetadataURIUpdated,
+  BAppOptedInByStrategy,
   BAppRegistered,
+  BAppTokensCreated,
   BAppTokensUpdated,
-  DelegatedBalance,
+  DelegationCreated,
+  DelegationRemoved,
+  DelegationUpdated,
   Initialized,
   MaxFeeIncrementSet,
-  ObligationUpdateFinalized,
+  ObligationCreated,
   ObligationUpdateProposed,
+  ObligationUpdated,
   OwnershipTransferred,
-  RemoveDelegatedBalance,
   StrategyCreated,
   StrategyDeposit,
-  StrategyFeeUpdateRequested,
+  StrategyFeeUpdateProposed,
   StrategyFeeUpdated,
   StrategyWithdrawal,
-  Upgraded,
-  WithdrawalETHFinalized,
-  WithdrawalETHProposed,
-  WithdrawalFinalized,
-  WithdrawalProposed
+  StrategyWithdrawalProposed,
+  Upgraded
 } from "../generated/BasedAppManager/BasedAppManager"
 
-export function createBAppObligationSetEvent(
-  strategyId: BigInt,
-  bApp: Address,
-  token: Address,
-  obligationPercentage: BigInt
-): BAppObligationSet {
-  let bAppObligationSetEvent = changetype<BAppObligationSet>(newMockEvent())
-
-  bAppObligationSetEvent.parameters = new Array()
-
-  bAppObligationSetEvent.parameters.push(
-    new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
-    )
-  )
-  bAppObligationSetEvent.parameters.push(
-    new ethereum.EventParam("bApp", ethereum.Value.fromAddress(bApp))
-  )
-  bAppObligationSetEvent.parameters.push(
-    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
-  )
-  bAppObligationSetEvent.parameters.push(
-    new ethereum.EventParam(
-      "obligationPercentage",
-      ethereum.Value.fromUnsignedBigInt(obligationPercentage)
-    )
-  )
-
-  return bAppObligationSetEvent
-}
-
-export function createBAppObligationUpdatedEvent(
-  strategyId: BigInt,
-  bApp: Address,
-  token: Address,
-  obligationPercentage: BigInt
-): BAppObligationUpdated {
-  let bAppObligationUpdatedEvent = changetype<BAppObligationUpdated>(
+export function createBAppMetadataURIUpdatedEvent(
+  bAppAddress: Address,
+  metadataURI: string
+): BAppMetadataURIUpdated {
+  let bAppMetadataUriUpdatedEvent = changetype<BAppMetadataURIUpdated>(
     newMockEvent()
   )
 
-  bAppObligationUpdatedEvent.parameters = new Array()
+  bAppMetadataUriUpdatedEvent.parameters = new Array()
 
-  bAppObligationUpdatedEvent.parameters.push(
+  bAppMetadataUriUpdatedEvent.parameters.push(
     new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
+      "bAppAddress",
+      ethereum.Value.fromAddress(bAppAddress)
     )
   )
-  bAppObligationUpdatedEvent.parameters.push(
-    new ethereum.EventParam("bApp", ethereum.Value.fromAddress(bApp))
-  )
-  bAppObligationUpdatedEvent.parameters.push(
-    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
-  )
-  bAppObligationUpdatedEvent.parameters.push(
+  bAppMetadataUriUpdatedEvent.parameters.push(
     new ethereum.EventParam(
-      "obligationPercentage",
-      ethereum.Value.fromUnsignedBigInt(obligationPercentage)
+      "metadataURI",
+      ethereum.Value.fromString(metadataURI)
     )
   )
 
-  return bAppObligationUpdatedEvent
+  return bAppMetadataUriUpdatedEvent
 }
 
-export function createBAppOptedInEvent(
+export function createBAppOptedInByStrategyEvent(
   strategyId: BigInt,
-  bApp: Address
-): BAppOptedIn {
-  let bAppOptedInEvent = changetype<BAppOptedIn>(newMockEvent())
+  bApp: Address,
+  data: Bytes,
+  tokens: Array<Address>,
+  obligationPercentages: Array<BigInt>
+): BAppOptedInByStrategy {
+  let bAppOptedInByStrategyEvent = changetype<BAppOptedInByStrategy>(
+    newMockEvent()
+  )
 
-  bAppOptedInEvent.parameters = new Array()
+  bAppOptedInByStrategyEvent.parameters = new Array()
 
-  bAppOptedInEvent.parameters.push(
+  bAppOptedInByStrategyEvent.parameters.push(
     new ethereum.EventParam(
       "strategyId",
       ethereum.Value.fromUnsignedBigInt(strategyId)
     )
   )
-  bAppOptedInEvent.parameters.push(
+  bAppOptedInByStrategyEvent.parameters.push(
     new ethereum.EventParam("bApp", ethereum.Value.fromAddress(bApp))
   )
+  bAppOptedInByStrategyEvent.parameters.push(
+    new ethereum.EventParam("data", ethereum.Value.fromBytes(data))
+  )
+  bAppOptedInByStrategyEvent.parameters.push(
+    new ethereum.EventParam("tokens", ethereum.Value.fromAddressArray(tokens))
+  )
+  bAppOptedInByStrategyEvent.parameters.push(
+    new ethereum.EventParam(
+      "obligationPercentages",
+      ethereum.Value.fromUnsignedBigIntArray(obligationPercentages)
+    )
+  )
 
-  return bAppOptedInEvent
+  return bAppOptedInByStrategyEvent
 }
 
 export function createBAppRegisteredEvent(
   bAppAddress: Address,
   owner: Address,
-  from: Address
+  tokens: Array<Address>,
+  sharedRiskLevel: Array<BigInt>,
+  metadataURI: string
 ): BAppRegistered {
   let bAppRegisteredEvent = changetype<BAppRegistered>(newMockEvent())
 
@@ -131,15 +109,56 @@ export function createBAppRegisteredEvent(
     new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
   )
   bAppRegisteredEvent.parameters.push(
-    new ethereum.EventParam("from", ethereum.Value.fromAddress(from))
+    new ethereum.EventParam("tokens", ethereum.Value.fromAddressArray(tokens))
+  )
+  bAppRegisteredEvent.parameters.push(
+    new ethereum.EventParam(
+      "sharedRiskLevel",
+      ethereum.Value.fromUnsignedBigIntArray(sharedRiskLevel)
+    )
+  )
+  bAppRegisteredEvent.parameters.push(
+    new ethereum.EventParam(
+      "metadataURI",
+      ethereum.Value.fromString(metadataURI)
+    )
   )
 
   return bAppRegisteredEvent
 }
 
+export function createBAppTokensCreatedEvent(
+  bAppAddress: Address,
+  tokens: Array<Address>,
+  sharedRiskLevels: Array<BigInt>
+): BAppTokensCreated {
+  let bAppTokensCreatedEvent = changetype<BAppTokensCreated>(newMockEvent())
+
+  bAppTokensCreatedEvent.parameters = new Array()
+
+  bAppTokensCreatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "bAppAddress",
+      ethereum.Value.fromAddress(bAppAddress)
+    )
+  )
+  bAppTokensCreatedEvent.parameters.push(
+    new ethereum.EventParam("tokens", ethereum.Value.fromAddressArray(tokens))
+  )
+  bAppTokensCreatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "sharedRiskLevels",
+      ethereum.Value.fromUnsignedBigIntArray(sharedRiskLevels)
+    )
+  )
+
+  return bAppTokensCreatedEvent
+}
+
 export function createBAppTokensUpdatedEvent(
   bAppAddress: Address,
-  tokens: Array<Address>
+  tokens: Array<Address>,
+  sharedRiskLevels: Array<BigInt>
 ): BAppTokensUpdated {
   let bAppTokensUpdatedEvent = changetype<BAppTokensUpdated>(newMockEvent())
 
@@ -154,33 +173,82 @@ export function createBAppTokensUpdatedEvent(
   bAppTokensUpdatedEvent.parameters.push(
     new ethereum.EventParam("tokens", ethereum.Value.fromAddressArray(tokens))
   )
+  bAppTokensUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "sharedRiskLevels",
+      ethereum.Value.fromUnsignedBigIntArray(sharedRiskLevels)
+    )
+  )
 
   return bAppTokensUpdatedEvent
 }
 
-export function createDelegatedBalanceEvent(
+export function createDelegationCreatedEvent(
   delegator: Address,
   receiver: Address,
   percentage: BigInt
-): DelegatedBalance {
-  let delegatedBalanceEvent = changetype<DelegatedBalance>(newMockEvent())
+): DelegationCreated {
+  let delegationCreatedEvent = changetype<DelegationCreated>(newMockEvent())
 
-  delegatedBalanceEvent.parameters = new Array()
+  delegationCreatedEvent.parameters = new Array()
 
-  delegatedBalanceEvent.parameters.push(
+  delegationCreatedEvent.parameters.push(
     new ethereum.EventParam("delegator", ethereum.Value.fromAddress(delegator))
   )
-  delegatedBalanceEvent.parameters.push(
+  delegationCreatedEvent.parameters.push(
     new ethereum.EventParam("receiver", ethereum.Value.fromAddress(receiver))
   )
-  delegatedBalanceEvent.parameters.push(
+  delegationCreatedEvent.parameters.push(
     new ethereum.EventParam(
       "percentage",
       ethereum.Value.fromUnsignedBigInt(percentage)
     )
   )
 
-  return delegatedBalanceEvent
+  return delegationCreatedEvent
+}
+
+export function createDelegationRemovedEvent(
+  delegator: Address,
+  receiver: Address
+): DelegationRemoved {
+  let delegationRemovedEvent = changetype<DelegationRemoved>(newMockEvent())
+
+  delegationRemovedEvent.parameters = new Array()
+
+  delegationRemovedEvent.parameters.push(
+    new ethereum.EventParam("delegator", ethereum.Value.fromAddress(delegator))
+  )
+  delegationRemovedEvent.parameters.push(
+    new ethereum.EventParam("receiver", ethereum.Value.fromAddress(receiver))
+  )
+
+  return delegationRemovedEvent
+}
+
+export function createDelegationUpdatedEvent(
+  delegator: Address,
+  receiver: Address,
+  percentage: BigInt
+): DelegationUpdated {
+  let delegationUpdatedEvent = changetype<DelegationUpdated>(newMockEvent())
+
+  delegationUpdatedEvent.parameters = new Array()
+
+  delegationUpdatedEvent.parameters.push(
+    new ethereum.EventParam("delegator", ethereum.Value.fromAddress(delegator))
+  )
+  delegationUpdatedEvent.parameters.push(
+    new ethereum.EventParam("receiver", ethereum.Value.fromAddress(receiver))
+  )
+  delegationUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "percentage",
+      ethereum.Value.fromUnsignedBigInt(percentage)
+    )
+  )
+
+  return delegationUpdatedEvent
 }
 
 export function createInitializedEvent(version: BigInt): Initialized {
@@ -215,38 +283,36 @@ export function createMaxFeeIncrementSetEvent(
   return maxFeeIncrementSetEvent
 }
 
-export function createObligationUpdateFinalizedEvent(
+export function createObligationCreatedEvent(
   strategyId: BigInt,
-  account: Address,
+  bApp: Address,
   token: Address,
-  percentage: BigInt
-): ObligationUpdateFinalized {
-  let obligationUpdateFinalizedEvent = changetype<ObligationUpdateFinalized>(
-    newMockEvent()
-  )
+  obligationPercentage: BigInt
+): ObligationCreated {
+  let obligationCreatedEvent = changetype<ObligationCreated>(newMockEvent())
 
-  obligationUpdateFinalizedEvent.parameters = new Array()
+  obligationCreatedEvent.parameters = new Array()
 
-  obligationUpdateFinalizedEvent.parameters.push(
+  obligationCreatedEvent.parameters.push(
     new ethereum.EventParam(
       "strategyId",
       ethereum.Value.fromUnsignedBigInt(strategyId)
     )
   )
-  obligationUpdateFinalizedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
+  obligationCreatedEvent.parameters.push(
+    new ethereum.EventParam("bApp", ethereum.Value.fromAddress(bApp))
   )
-  obligationUpdateFinalizedEvent.parameters.push(
+  obligationCreatedEvent.parameters.push(
     new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
   )
-  obligationUpdateFinalizedEvent.parameters.push(
+  obligationCreatedEvent.parameters.push(
     new ethereum.EventParam(
-      "percentage",
-      ethereum.Value.fromUnsignedBigInt(percentage)
+      "obligationPercentage",
+      ethereum.Value.fromUnsignedBigInt(obligationPercentage)
     )
   )
 
-  return obligationUpdateFinalizedEvent
+  return obligationCreatedEvent
 }
 
 export function createObligationUpdateProposedEvent(
@@ -290,6 +356,42 @@ export function createObligationUpdateProposedEvent(
   return obligationUpdateProposedEvent
 }
 
+export function createObligationUpdatedEvent(
+  strategyId: BigInt,
+  bApp: Address,
+  token: Address,
+  obligationPercentage: BigInt,
+  isFast: boolean
+): ObligationUpdated {
+  let obligationUpdatedEvent = changetype<ObligationUpdated>(newMockEvent())
+
+  obligationUpdatedEvent.parameters = new Array()
+
+  obligationUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "strategyId",
+      ethereum.Value.fromUnsignedBigInt(strategyId)
+    )
+  )
+  obligationUpdatedEvent.parameters.push(
+    new ethereum.EventParam("bApp", ethereum.Value.fromAddress(bApp))
+  )
+  obligationUpdatedEvent.parameters.push(
+    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
+  )
+  obligationUpdatedEvent.parameters.push(
+    new ethereum.EventParam(
+      "obligationPercentage",
+      ethereum.Value.fromUnsignedBigInt(obligationPercentage)
+    )
+  )
+  obligationUpdatedEvent.parameters.push(
+    new ethereum.EventParam("isFast", ethereum.Value.fromBoolean(isFast))
+  )
+
+  return obligationUpdatedEvent
+}
+
 export function createOwnershipTransferredEvent(
   previousOwner: Address,
   newOwner: Address
@@ -313,29 +415,10 @@ export function createOwnershipTransferredEvent(
   return ownershipTransferredEvent
 }
 
-export function createRemoveDelegatedBalanceEvent(
-  delegator: Address,
-  receiver: Address
-): RemoveDelegatedBalance {
-  let removeDelegatedBalanceEvent = changetype<RemoveDelegatedBalance>(
-    newMockEvent()
-  )
-
-  removeDelegatedBalanceEvent.parameters = new Array()
-
-  removeDelegatedBalanceEvent.parameters.push(
-    new ethereum.EventParam("delegator", ethereum.Value.fromAddress(delegator))
-  )
-  removeDelegatedBalanceEvent.parameters.push(
-    new ethereum.EventParam("receiver", ethereum.Value.fromAddress(receiver))
-  )
-
-  return removeDelegatedBalanceEvent
-}
-
 export function createStrategyCreatedEvent(
   strategyId: BigInt,
-  owner: Address
+  owner: Address,
+  fee: BigInt
 ): StrategyCreated {
   let strategyCreatedEvent = changetype<StrategyCreated>(newMockEvent())
 
@@ -349,6 +432,9 @@ export function createStrategyCreatedEvent(
   )
   strategyCreatedEvent.parameters.push(
     new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
+  )
+  strategyCreatedEvent.parameters.push(
+    new ethereum.EventParam("fee", ethereum.Value.fromUnsignedBigInt(fee))
   )
 
   return strategyCreatedEvent
@@ -386,45 +472,45 @@ export function createStrategyDepositEvent(
   return strategyDepositEvent
 }
 
-export function createStrategyFeeUpdateRequestedEvent(
+export function createStrategyFeeUpdateProposedEvent(
   strategyId: BigInt,
   owner: Address,
   proposedFee: BigInt,
   fee: BigInt,
   expirationTime: BigInt
-): StrategyFeeUpdateRequested {
-  let strategyFeeUpdateRequestedEvent = changetype<StrategyFeeUpdateRequested>(
+): StrategyFeeUpdateProposed {
+  let strategyFeeUpdateProposedEvent = changetype<StrategyFeeUpdateProposed>(
     newMockEvent()
   )
 
-  strategyFeeUpdateRequestedEvent.parameters = new Array()
+  strategyFeeUpdateProposedEvent.parameters = new Array()
 
-  strategyFeeUpdateRequestedEvent.parameters.push(
+  strategyFeeUpdateProposedEvent.parameters.push(
     new ethereum.EventParam(
       "strategyId",
       ethereum.Value.fromUnsignedBigInt(strategyId)
     )
   )
-  strategyFeeUpdateRequestedEvent.parameters.push(
+  strategyFeeUpdateProposedEvent.parameters.push(
     new ethereum.EventParam("owner", ethereum.Value.fromAddress(owner))
   )
-  strategyFeeUpdateRequestedEvent.parameters.push(
+  strategyFeeUpdateProposedEvent.parameters.push(
     new ethereum.EventParam(
       "proposedFee",
       ethereum.Value.fromUnsignedBigInt(proposedFee)
     )
   )
-  strategyFeeUpdateRequestedEvent.parameters.push(
+  strategyFeeUpdateProposedEvent.parameters.push(
     new ethereum.EventParam("fee", ethereum.Value.fromUnsignedBigInt(fee))
   )
-  strategyFeeUpdateRequestedEvent.parameters.push(
+  strategyFeeUpdateProposedEvent.parameters.push(
     new ethereum.EventParam(
       "expirationTime",
       ethereum.Value.fromUnsignedBigInt(expirationTime)
     )
   )
 
-  return strategyFeeUpdateRequestedEvent
+  return strategyFeeUpdateProposedEvent
 }
 
 export function createStrategyFeeUpdatedEvent(
@@ -460,7 +546,8 @@ export function createStrategyWithdrawalEvent(
   strategyId: BigInt,
   contributor: Address,
   token: Address,
-  amount: BigInt
+  amount: BigInt,
+  isFast: boolean
 ): StrategyWithdrawal {
   let strategyWithdrawalEvent = changetype<StrategyWithdrawal>(newMockEvent())
 
@@ -484,8 +571,49 @@ export function createStrategyWithdrawalEvent(
   strategyWithdrawalEvent.parameters.push(
     new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
   )
+  strategyWithdrawalEvent.parameters.push(
+    new ethereum.EventParam("isFast", ethereum.Value.fromBoolean(isFast))
+  )
 
   return strategyWithdrawalEvent
+}
+
+export function createStrategyWithdrawalProposedEvent(
+  strategyId: BigInt,
+  account: Address,
+  token: Address,
+  amount: BigInt,
+  finalizeTime: BigInt
+): StrategyWithdrawalProposed {
+  let strategyWithdrawalProposedEvent = changetype<StrategyWithdrawalProposed>(
+    newMockEvent()
+  )
+
+  strategyWithdrawalProposedEvent.parameters = new Array()
+
+  strategyWithdrawalProposedEvent.parameters.push(
+    new ethereum.EventParam(
+      "strategyId",
+      ethereum.Value.fromUnsignedBigInt(strategyId)
+    )
+  )
+  strategyWithdrawalProposedEvent.parameters.push(
+    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
+  )
+  strategyWithdrawalProposedEvent.parameters.push(
+    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
+  )
+  strategyWithdrawalProposedEvent.parameters.push(
+    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
+  )
+  strategyWithdrawalProposedEvent.parameters.push(
+    new ethereum.EventParam(
+      "finalizeTime",
+      ethereum.Value.fromUnsignedBigInt(finalizeTime)
+    )
+  )
+
+  return strategyWithdrawalProposedEvent
 }
 
 export function createUpgradedEvent(implementation: Address): Upgraded {
@@ -501,130 +629,4 @@ export function createUpgradedEvent(implementation: Address): Upgraded {
   )
 
   return upgradedEvent
-}
-
-export function createWithdrawalETHFinalizedEvent(
-  strategyId: BigInt,
-  account: Address,
-  amount: BigInt
-): WithdrawalETHFinalized {
-  let withdrawalEthFinalizedEvent = changetype<WithdrawalETHFinalized>(
-    newMockEvent()
-  )
-
-  withdrawalEthFinalizedEvent.parameters = new Array()
-
-  withdrawalEthFinalizedEvent.parameters.push(
-    new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
-    )
-  )
-  withdrawalEthFinalizedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  withdrawalEthFinalizedEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-
-  return withdrawalEthFinalizedEvent
-}
-
-export function createWithdrawalETHProposedEvent(
-  strategyId: BigInt,
-  account: Address,
-  amount: BigInt,
-  finalizeTime: BigInt
-): WithdrawalETHProposed {
-  let withdrawalEthProposedEvent = changetype<WithdrawalETHProposed>(
-    newMockEvent()
-  )
-
-  withdrawalEthProposedEvent.parameters = new Array()
-
-  withdrawalEthProposedEvent.parameters.push(
-    new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
-    )
-  )
-  withdrawalEthProposedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  withdrawalEthProposedEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-  withdrawalEthProposedEvent.parameters.push(
-    new ethereum.EventParam(
-      "finalizeTime",
-      ethereum.Value.fromUnsignedBigInt(finalizeTime)
-    )
-  )
-
-  return withdrawalEthProposedEvent
-}
-
-export function createWithdrawalFinalizedEvent(
-  strategyId: BigInt,
-  account: Address,
-  token: Address,
-  amount: BigInt
-): WithdrawalFinalized {
-  let withdrawalFinalizedEvent = changetype<WithdrawalFinalized>(newMockEvent())
-
-  withdrawalFinalizedEvent.parameters = new Array()
-
-  withdrawalFinalizedEvent.parameters.push(
-    new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
-    )
-  )
-  withdrawalFinalizedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  withdrawalFinalizedEvent.parameters.push(
-    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
-  )
-  withdrawalFinalizedEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-
-  return withdrawalFinalizedEvent
-}
-
-export function createWithdrawalProposedEvent(
-  strategyId: BigInt,
-  account: Address,
-  token: Address,
-  amount: BigInt,
-  finalizeTime: BigInt
-): WithdrawalProposed {
-  let withdrawalProposedEvent = changetype<WithdrawalProposed>(newMockEvent())
-
-  withdrawalProposedEvent.parameters = new Array()
-
-  withdrawalProposedEvent.parameters.push(
-    new ethereum.EventParam(
-      "strategyId",
-      ethereum.Value.fromUnsignedBigInt(strategyId)
-    )
-  )
-  withdrawalProposedEvent.parameters.push(
-    new ethereum.EventParam("account", ethereum.Value.fromAddress(account))
-  )
-  withdrawalProposedEvent.parameters.push(
-    new ethereum.EventParam("token", ethereum.Value.fromAddress(token))
-  )
-  withdrawalProposedEvent.parameters.push(
-    new ethereum.EventParam("amount", ethereum.Value.fromUnsignedBigInt(amount))
-  )
-  withdrawalProposedEvent.parameters.push(
-    new ethereum.EventParam(
-      "finalizeTime",
-      ethereum.Value.fromUnsignedBigInt(finalizeTime)
-    )
-  )
-
-  return withdrawalProposedEvent
 }

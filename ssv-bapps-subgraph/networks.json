@@ -1,8 +1,0 @@
-{
-  "mainnet": {
-    "BasedAppManager": {
-      "address": "0xa8D6b028c6A48eCaf5558358A17824D1493D5B0a",
-      "startBlock": 3250994
-    }
-  }
-}

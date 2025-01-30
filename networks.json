@@ -1,8 +1,11 @@
 {
-  "holesky": {
+  "mainnet": {
     "BasedAppManager": {
-      "address": "0x15398DAe5d53738bF56226a7216C2396CD12cb18",
-      "startBlock": 3189766
+      "address": "0xa8D6b028c6A48eCaf5558358A17824D1493D5B0a",
+      "startBlock": 3250994
+    },
+    "SSVNetwork": {
+      "address": "0x38A4794cCEd47d3baf7370CcC43B560D3a1beEFA"
     }
   }
 }
