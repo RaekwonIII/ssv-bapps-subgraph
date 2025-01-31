@@ -1,10 +1,16 @@
 type BApp @entity(immutable: false) {
   id: Bytes! # address
   owner: Account! # address
-  tokens: [Bytes!]! # addresses
-  sharedRiskLevel: BigInt!
+  bAppTokens: [SharedRiskLevel!]! @derivedFrom(field: "bApp")
   metadataURI: String
   strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
+}
+
+type SharedRiskLevel @entity(immutable: false) {
+  id: String!
+  bApp: BApp!
+  token: Bytes!
+  sharedRiskLevel: BigInt!
 }
 
 type Strategy @entity(immutable: false) {
@@ -13,7 +19,7 @@ type Strategy @entity(immutable: false) {
   owner: Account! # address
   fee: BigInt! # uint256
   feeProposed: BigInt! # uint256
-  feeUpdateTime: BigInt! # uint256
+  feeProposedTimestamp: BigInt! # uint256
   bApps: [StrategyBAppOptIn!]! @derivedFrom(field: "strategy")
   balances: [StrategyTokenBalance!]! @derivedFrom(field: "strategy")
 }
@@ -28,15 +34,19 @@ type StrategyBAppOptIn @entity(immutable: false) {
 type Obligation @entity(immutable: false) {
   id: String! # Set to `StrategyBAppOptIn.id.concat(token.id)`
   token: Bytes! # address
+  percentageProposed: BigInt!
+  percentageProposedTimestamp: BigInt! # uint256
   percentage: BigInt!
 }
 
 type StrategyTokenBalance @entity(immutable: false) {
   id: String! # Set to `strategy.id.concat(account.id.concat(token.id))`
-  depositor: Account!
+  contributor: Account!
   strategy: Strategy!
   token: Bytes! # address
   balance: BigInt!
+  proposedWithdrawal: BigInt!
+  proposedWithdrawalTimestamp: BigInt!
 }
 
 type Account @entity(immutable: false) {
@@ -52,10 +62,9 @@ type Account @entity(immutable: false) {
   bApps: [BApp!]! @derivedFrom(field: "owner")
   strategies: [Strategy!]! @derivedFrom(field: "owner")
   totalDelegatedPercentage: BigInt! # uint256
-  # TODO: to be verified, these are likely to have to be inverted
-  delegators: [Delegation!]! @derivedFrom(field: "delegator")
-  receivers: [Delegation!]! @derivedFrom(field: "receiver")
-  strategyTokenBalances: [StrategyTokenBalance!]! @derivedFrom(field: "depositor")
+  delegators: [Delegation!]! @derivedFrom(field: "receiver")
+  receivers: [Delegation!]! @derivedFrom(field: "delegator")
+  strategyTokenBalances: [StrategyTokenBalance!]! @derivedFrom(field: "contributor")
 }
 
 type Delegation @entity(immutable: false) {
