@@ -19,11 +19,11 @@
   },
   "holesky-prod": {
     "BasedAppManager": {
-      "address": "",
+      "address": "0x9a09A49870353867b0ce9901B44E84C32B2A47AC",
       "startBlock": 3250994
     },
     "BasedAppManagerImpl": {
-      "address": "",
+      "address": "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A",
       "startBlock": 3250994
     },
     "SSVNetwork": {

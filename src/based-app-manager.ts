@@ -154,6 +154,8 @@ export function handleBAppOptedInByStrategy(
     obligationsList.push(obligationId);
   }
   // Setting the list of obligations in the Strategy <=> BApp mapping table (the StrategyBAppOptIn <> Obligations relation is not derived from a field)
+  strategyBAppOptIn.bApp = event.params.bApp;
+  strategyBAppOptIn.strategy = event.params.strategyId.toString();
   strategyBAppOptIn.obligations = obligationsList;
   strategyBAppOptIn.save();
 }
@@ -314,6 +316,7 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     receiver.nonce = BigInt.zero();
     receiver.validatorCount = BigInt.zero();
     receiver.feeRecipient = event.params.receiver;
+    receiver.totalDelegatedPercentage = BigInt.zero()
     receiver.save();
   }
 
@@ -505,6 +508,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
     obligation.token = token;
     obligation.percentage = percentage;
     obligation.percentageProposed = percentage;
+    obligation.percentageProposedTimestamp = BigInt.zero();
     obligation.save();
   }
 }
@@ -617,6 +621,7 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
     log.info(`New Strategy created ${strategyId}`, []);
     strategy = new Strategy(strategyId);
   }
+  strategy.owner = event.params.owner;
   strategy.strategyId = event.params.strategyId;
   strategy.fee = event.params.fee;
   strategy.feeProposed = event.params.fee;
