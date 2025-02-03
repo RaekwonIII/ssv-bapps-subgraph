@@ -176,6 +176,20 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
 
   entity.save();
 
+  let owner = Account.load(event.params.owner);
+  if (!owner) {
+    log.info(
+      `Trying to create new BApp but owner account ${event.params.owner.toHexString()} does not exist, creating it`,
+      []
+    );
+    owner = new Account(event.params.owner);
+    owner.nonce = BigInt.zero();
+    owner.validatorCount = BigInt.zero();
+    owner.feeRecipient = event.params.owner;
+    owner.totalDelegatedPercentage = BigInt.zero();
+  }
+  owner.save();
+
   let bApp = BApp.load(event.params.bAppAddress);
   if (!bApp) {
     bApp = new BApp(event.params.bAppAddress);
@@ -614,6 +628,20 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
   entity.transactionHash = event.transaction.hash;
 
   entity.save();
+
+  let owner = Account.load(event.params.owner);
+  if (!owner) {
+    log.info(
+      `Trying to create new Strategy but owner account ${event.params.owner.toHexString()} does not exist, creating it`,
+      []
+    );
+    owner = new Account(event.params.owner);
+    owner.nonce = BigInt.zero();
+    owner.validatorCount = BigInt.zero();
+    owner.feeRecipient = event.params.owner;
+    owner.totalDelegatedPercentage = BigInt.zero();
+  }
+  owner.save();
 
   let strategyId = event.params.strategyId.toString();
   let strategy = Strategy.load(strategyId);
