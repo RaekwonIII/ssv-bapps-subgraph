@@ -67,6 +67,11 @@ type Account @entity(immutable: false) {
   strategyTokenBalances: [StrategyTokenBalance!]! @derivedFrom(field: "contributor")
 }
 
+type BAppConstants @entity(immutable: false) {
+  id: Bytes! # address
+  _maxFeeIncrement: BigInt!
+}
+
 type Delegation @entity(immutable: false) {
   id: String! # Set to `account.id.concat(account.id)` (delegator => receiver)
   delegator: Account!
@@ -186,10 +191,9 @@ type ObligationCreated @entity(immutable: true) {
 type ObligationUpdateProposed @entity(immutable: true) {
   id: Bytes!
   strategyId: BigInt! # uint256
-  account: Bytes! # address
+  bApp: Bytes! # address
   token: Bytes! # address
   percentage: BigInt! # uint32
-  finalizeTime: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -200,7 +204,7 @@ type ObligationUpdated @entity(immutable: true) {
   strategyId: BigInt! # uint256
   bApp: Bytes! # address
   token: Bytes! # address
-  obligationPercentage: BigInt! # uint256
+  percentage: BigInt! # uint256
   isFast: Boolean! # bool
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -243,7 +247,6 @@ type StrategyFeeUpdateProposed @entity(immutable: true) {
   owner: Bytes! # address
   proposedFee: BigInt! # uint32
   fee: BigInt! # uint32
-  expirationTime: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -278,7 +281,6 @@ type StrategyWithdrawalProposed @entity(immutable: true) {
   account: Bytes! # address
   token: Bytes! # address
   amount: BigInt! # uint256
-  finalizeTime: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

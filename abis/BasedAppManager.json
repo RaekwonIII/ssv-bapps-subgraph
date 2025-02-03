@@ -166,7 +166,11 @@
     "name": "depositERC20",
     "inputs": [
       { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
-      { "name": "token", "type": "address", "internalType": "contract IERC20" },
+      {
+        "name": "token",
+        "type": "address",
+        "internalType": "contract IERC20"
+      },
       { "name": "amount", "type": "uint256", "internalType": "uint256" }
     ],
     "outputs": [],
@@ -202,7 +206,11 @@
     "name": "fastWithdrawERC20",
     "inputs": [
       { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
-      { "name": "token", "type": "address", "internalType": "contract IERC20" },
+      {
+        "name": "token",
+        "type": "address",
+        "internalType": "contract IERC20"
+      },
       { "name": "amount", "type": "uint256", "internalType": "uint256" }
     ],
     "outputs": [],
@@ -243,7 +251,11 @@
     "name": "finalizeWithdrawal",
     "inputs": [
       { "name": "strategyId", "type": "uint256", "internalType": "uint256" },
-      { "name": "token", "type": "address", "internalType": "contract IERC20" }
+      {
+        "name": "token",
+        "type": "address",
+        "internalType": "contract IERC20"
+      }
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
@@ -262,7 +274,11 @@
     "name": "initialize",
     "inputs": [
       { "name": "owner", "type": "address", "internalType": "address" },
-      { "name": "_maxFeeIncrement", "type": "uint32", "internalType": "uint32" }
+      {
+        "name": "_maxFeeIncrement",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
@@ -284,7 +300,7 @@
     ],
     "outputs": [
       { "name": "percentage", "type": "uint32", "internalType": "uint32" },
-      { "name": "requestTime", "type": "uint256", "internalType": "uint256" }
+      { "name": "requestTime", "type": "uint64", "internalType": "uint64" }
     ],
     "stateMutability": "view"
   },
@@ -422,7 +438,7 @@
       { "name": "owner", "type": "address", "internalType": "address" },
       { "name": "fee", "type": "uint32", "internalType": "uint32" },
       { "name": "feeProposed", "type": "uint32", "internalType": "uint32" },
-      { "name": "feeUpdateTime", "type": "uint256", "internalType": "uint256" }
+      { "name": "feeRequestTime", "type": "uint64", "internalType": "uint64" }
     ],
     "stateMutability": "view"
   },
@@ -446,7 +462,11 @@
       { "name": "delegator", "type": "address", "internalType": "address" }
     ],
     "outputs": [
-      { "name": "totalPercentage", "type": "uint32", "internalType": "uint32" }
+      {
+        "name": "totalPercentage",
+        "type": "uint32",
+        "internalType": "uint32"
+      }
     ],
     "stateMutability": "view"
   },
@@ -530,7 +550,7 @@
     ],
     "outputs": [
       { "name": "amount", "type": "uint256", "internalType": "uint256" },
-      { "name": "requestTime", "type": "uint256", "internalType": "uint256" }
+      { "name": "requestTime", "type": "uint64", "internalType": "uint64" }
     ],
     "stateMutability": "view"
   },
@@ -766,7 +786,7 @@
       {
         "name": "newMaxFeeIncrement",
         "type": "uint32",
-        "indexed": true,
+        "indexed": false,
         "internalType": "uint32"
       }
     ],
@@ -791,11 +811,11 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
-        "name": "obligationPercentage",
+        "name": "percentage",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
@@ -814,7 +834,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "account",
+        "name": "bApp",
         "type": "address",
         "indexed": true,
         "internalType": "address"
@@ -822,7 +842,7 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
@@ -830,12 +850,6 @@
         "type": "uint32",
         "indexed": false,
         "internalType": "uint32"
-      },
-      {
-        "name": "finalizeTime",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -859,11 +873,11 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
-        "name": "obligationPercentage",
+        "name": "percentage",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
@@ -932,7 +946,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "contributor",
+        "name": "account",
         "type": "address",
         "indexed": true,
         "internalType": "address"
@@ -940,7 +954,7 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
@@ -979,12 +993,6 @@
         "type": "uint32",
         "indexed": false,
         "internalType": "uint32"
-      },
-      {
-        "name": "expirationTime",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -1031,7 +1039,7 @@
         "internalType": "uint256"
       },
       {
-        "name": "contributor",
+        "name": "account",
         "type": "address",
         "indexed": true,
         "internalType": "address"
@@ -1039,7 +1047,7 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
@@ -1076,17 +1084,11 @@
       {
         "name": "token",
         "type": "address",
-        "indexed": true,
+        "indexed": false,
         "internalType": "address"
       },
       {
         "name": "amount",
-        "type": "uint256",
-        "indexed": false,
-        "internalType": "uint256"
-      },
-      {
-        "name": "finalizeTime",
         "type": "uint256",
         "indexed": false,
         "internalType": "uint256"
@@ -1124,7 +1126,11 @@
     "type": "error",
     "name": "ERC1967InvalidImplementation",
     "inputs": [
-      { "name": "implementation", "type": "address", "internalType": "address" }
+      {
+        "name": "implementation",
+        "type": "address",
+        "internalType": "address"
+      }
     ]
   },
   { "type": "error", "name": "ERC1967NonPayable", "inputs": [] },
@@ -1132,8 +1138,6 @@
   { "type": "error", "name": "ExceedingPercentageUpdate", "inputs": [] },
   { "type": "error", "name": "FailedCall", "inputs": [] },
   { "type": "error", "name": "FeeAlreadySet", "inputs": [] },
-  { "type": "error", "name": "FeeTimelockNotElapsed", "inputs": [] },
-  { "type": "error", "name": "FeeUpdateExpired", "inputs": [] },
   { "type": "error", "name": "InsufficientBalance", "inputs": [] },
   { "type": "error", "name": "InvalidAmount", "inputs": [] },
   {
@@ -1141,7 +1145,11 @@
     "name": "InvalidBAppOwner",
     "inputs": [
       { "name": "caller", "type": "address", "internalType": "address" },
-      { "name": "expectedOwner", "type": "address", "internalType": "address" }
+      {
+        "name": "expectedOwner",
+        "type": "address",
+        "internalType": "address"
+      }
     ]
   },
   { "type": "error", "name": "InvalidInitialization", "inputs": [] },
@@ -1154,7 +1162,11 @@
     "name": "InvalidStrategyOwner",
     "inputs": [
       { "name": "caller", "type": "address", "internalType": "address" },
-      { "name": "expectedOwner", "type": "address", "internalType": "address" }
+      {
+        "name": "expectedOwner",
+        "type": "address",
+        "internalType": "address"
+      }
     ]
   },
   { "type": "error", "name": "InvalidToken", "inputs": [] },
@@ -1166,7 +1178,6 @@
   { "type": "error", "name": "NotInitializing", "inputs": [] },
   { "type": "error", "name": "ObligationAlreadySet", "inputs": [] },
   { "type": "error", "name": "ObligationHasNotBeenCreated", "inputs": [] },
-  { "type": "error", "name": "ObligationTimelockNotElapsed", "inputs": [] },
   {
     "type": "error",
     "name": "OwnableInvalidOwner",
@@ -1182,6 +1193,7 @@
     ]
   },
   { "type": "error", "name": "ReentrancyGuardReentrantCall", "inputs": [] },
+  { "type": "error", "name": "RequestTimeExpired", "inputs": [] },
   {
     "type": "error",
     "name": "SafeERC20FailedOperation",
@@ -1190,6 +1202,7 @@
     ]
   },
   { "type": "error", "name": "SharedRiskLevelAlreadySet", "inputs": [] },
+  { "type": "error", "name": "TimelockNotElapsed", "inputs": [] },
   {
     "type": "error",
     "name": "TokenAlreadyAddedToBApp",
@@ -1211,8 +1224,5 @@
     "name": "UUPSUnsupportedProxiableUUID",
     "inputs": [{ "name": "slot", "type": "bytes32", "internalType": "bytes32" }]
   },
-  { "type": "error", "name": "UpdateObligationExpired", "inputs": [] },
-  { "type": "error", "name": "WithdrawalExpired", "inputs": [] },
-  { "type": "error", "name": "WithdrawalTimelockNotElapsed", "inputs": [] },
   { "type": "error", "name": "ZeroAddressNotAllowed", "inputs": [] }
 ]

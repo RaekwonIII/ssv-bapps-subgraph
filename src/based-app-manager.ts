@@ -8,6 +8,7 @@ import {
   DelegationCreated as DelegationCreatedEvent,
   DelegationRemoved as DelegationRemovedEvent,
   DelegationUpdated as DelegationUpdatedEvent,
+  InitializeCall,
   Initialized as InitializedEvent,
   MaxFeeIncrementSet as MaxFeeIncrementSetEvent,
   ObligationCreated as ObligationCreatedEvent,
@@ -25,6 +26,7 @@ import {
 import {
   Account,
   BApp,
+  BAppConstants,
   BAppMetadataURIUpdated,
   BAppOptedInByStrategy,
   BAppRegistered,
@@ -53,6 +55,23 @@ import {
   StrategyWithdrawalProposed,
   Upgraded,
 } from "../generated/schema";
+
+export function handleInitialize(
+  call: InitializeCall
+): void {
+  let implementationContract = call.from
+  if (!implementationContract.toHexString().toLowerCase().includes("0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317") && !implementationContract.toHexString().toLowerCase().includes("0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"))
+  {
+    log.error(`Caller is ${implementationContract.toHexString()}, but we only expect 0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317`,[])
+    return
+  }
+
+  log.info(`New contract Initialized, DAO values store with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`, [])
+  let bAppConstants = new BAppConstants(implementationContract)
+  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement
+
+  bAppConstants.save()
+}
 
 export function handleBAppMetadataURIUpdated(
   event: BAppMetadataURIUpdatedEvent
@@ -179,6 +198,7 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
       sharedRiskLevel = new SharedRiskLevel(sharedRiskLevelId);
       sharedRiskLevel.token = token;
       sharedRiskLevel.sharedRiskLevel = sharedRiskLevelValue;
+      sharedRiskLevel.bApp = bApp.id;
       sharedRiskLevel.save();
     }
   }
@@ -395,8 +415,9 @@ export function handleDelegationUpdated(event: DelegationUpdatedEvent): void {
     return;
   }
   let existingPercentage = delegator.totalDelegatedPercentage;
-  delegator.totalDelegatedPercentage =
-    delegator.totalDelegatedPercentage.minus(existingPercentage).plus(event.params.percentage);
+  delegator.totalDelegatedPercentage = delegator.totalDelegatedPercentage
+    .minus(existingPercentage)
+    .plus(event.params.percentage);
   delegator.save();
 
   let receiver = Account.load(event.params.receiver);
@@ -458,7 +479,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
   entity.strategyId = event.params.strategyId;
   entity.bApp = event.params.bApp;
   entity.token = event.params.token;
-  entity.obligationPercentage = event.params.obligationPercentage;
+  entity.obligationPercentage = event.params.percentage;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -467,10 +488,10 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
   entity.save();
 
   let token = event.params.token;
-  let percentage = event.params.obligationPercentage;
+  let percentage = event.params.percentage;
   let strategyBAppOptInId = event.params.strategyId
     .toString()
-    .concat(event.params.bApp.toHexString())
+    .concat(event.params.bApp.toHexString());
   let obligationId = strategyBAppOptInId.concat(token.toHexString());
   let obligation = Obligation.load(obligationId);
   if (!obligation) {
@@ -495,10 +516,9 @@ export function handleObligationUpdateProposed(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.strategyId = event.params.strategyId;
-  entity.account = event.params.account;
+  entity.bApp = event.params.bApp;
   entity.token = event.params.token;
   entity.percentage = event.params.percentage;
-  entity.finalizeTime = event.params.finalizeTime;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -533,19 +553,20 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
   entity.strategyId = event.params.strategyId;
   entity.bApp = event.params.bApp;
   entity.token = event.params.token;
-  entity.obligationPercentage = event.params.obligationPercentage;
+  entity.percentage = event.params.percentage;
   entity.isFast = event.params.isFast;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
-  entity.save();let token = event.params.token;
-  
+  entity.save();
+  let token = event.params.token;
+
   // need to copy the percentage from `percentageProposed`
   let strategyBAppOptInId = event.params.strategyId
     .toString()
-    .concat(event.params.bApp.toHexString())
+    .concat(event.params.bApp.toHexString());
   let obligationId = strategyBAppOptInId.concat(token.toHexString());
   let obligation = Obligation.load(obligationId);
   if (!obligation) {
@@ -553,7 +574,7 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
       `Obligation ${obligationId} is being updated but it does not exist, and it can't be created`,
       []
     );
-    return
+    return;
   }
   obligation.token = token;
   obligation.percentage = obligation.percentageProposed;
@@ -593,15 +614,12 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
   let strategyId = event.params.strategyId.toString();
   let strategy = Strategy.load(strategyId);
   if (!strategy) {
-    log.info(
-      `New Strategy created ${strategyId}`,
-      []
-    );
+    log.info(`New Strategy created ${strategyId}`, []);
     strategy = new Strategy(strategyId);
   }
-  strategy.strategyId = event.params.strategyId
-  strategy.fee = event.params.fee
-  strategy.feeProposed = event.params.fee
+  strategy.strategyId = event.params.strategyId;
+  strategy.fee = event.params.fee;
+  strategy.feeProposed = event.params.fee;
   strategy.feeProposedTimestamp = event.block.timestamp;
   strategy.save();
 }
@@ -611,7 +629,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.strategyId = event.params.strategyId;
-  entity.contributor = event.params.contributor;
+  entity.contributor = event.params.account;
   entity.token = event.params.token;
   entity.amount = event.params.amount;
 
@@ -621,10 +639,10 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
 
   entity.save();
 
-  let contributor = Account.load(event.params.contributor);
+  let contributor = Account.load(event.params.account);
   if (!contributor) {
     log.error(
-      `Trying to create new StrategyTokenBalance but contributor Account ${event.params.contributor.toHexString()} does not exist, and cannot be created`,
+      `Trying to create new StrategyTokenBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
       []
     );
     return;
@@ -639,24 +657,28 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
     return;
   }
 
-  let token = event.params.token
-  let strategyTokenBalanceId = strategy.id.concat(contributor.id.toHexString().concat(token.toHexString()));
+  let token = event.params.token;
+  let strategyTokenBalanceId = strategy.id.concat(
+    contributor.id.toHexString().concat(token.toHexString())
+  );
   let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
   if (!strategyTokenBalance) {
     log.info(
-      `Strategy ${strategy.id} is receiving a deposit of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
+      `Strategy ${
+        strategy.id
+      } is receiving a deposit of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
       []
     );
-    strategyTokenBalance = new StrategyTokenBalance(strategyTokenBalanceId)
-    strategyTokenBalance.balance = BigInt.zero()
-    strategyTokenBalance.contributor = contributor.id
-    strategyTokenBalance.strategy = strategy.id
-    strategyTokenBalance.token = token
-    strategyTokenBalance.proposedWithdrawal = BigInt.zero()
-    strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero()
+    strategyTokenBalance = new StrategyTokenBalance(strategyTokenBalanceId);
+    strategyTokenBalance.balance = BigInt.zero();
+    strategyTokenBalance.contributor = contributor.id;
+    strategyTokenBalance.strategy = strategy.id;
+    strategyTokenBalance.token = token;
+    strategyTokenBalance.proposedWithdrawal = BigInt.zero();
+    strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero();
   }
-  strategyTokenBalance.balance.plus(event.params.amount)
-  strategyTokenBalance.save()
+  strategyTokenBalance.balance.plus(event.params.amount);
+  strategyTokenBalance.save();
 }
 
 export function handleStrategyFeeUpdateProposed(
@@ -669,7 +691,6 @@ export function handleStrategyFeeUpdateProposed(
   entity.owner = event.params.owner;
   entity.proposedFee = event.params.proposedFee;
   entity.fee = event.params.fee;
-  entity.expirationTime = event.params.expirationTime;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -677,14 +698,14 @@ export function handleStrategyFeeUpdateProposed(
 
   entity.save();
 
-  let strategyId = event.params.strategyId.toString()
+  let strategyId = event.params.strategyId.toString();
   let strategy = Strategy.load(strategyId);
   if (!strategy) {
     log.error(
       `Strategy ${strategyId} is being updated but it does not exist, and it can't be created`,
       []
     );
-    return
+    return;
   }
   strategy.feeProposed = event.params.proposedFee;
   strategy.feeProposedTimestamp = event.block.timestamp;
@@ -706,14 +727,14 @@ export function handleStrategyFeeUpdated(event: StrategyFeeUpdatedEvent): void {
 
   entity.save();
 
-  let strategyId = event.params.strategyId.toString()
+  let strategyId = event.params.strategyId.toString();
   let strategy = Strategy.load(strategyId);
   if (!strategy) {
     log.error(
       `Strategy ${strategyId} is being updated but it does not exist, and it can't be created`,
       []
     );
-    return
+    return;
   }
   strategy.fee = event.params.fee;
   strategy.feeProposed = event.params.fee;
@@ -726,65 +747,10 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.strategyId = event.params.strategyId;
-  entity.contributor = event.params.contributor;
+  entity.contributor = event.params.account;
   entity.token = event.params.token;
   entity.amount = event.params.amount;
   entity.isFast = event.params.isFast;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-
-  let contributor = Account.load(event.params.contributor);
-  if (!contributor) {
-    log.error(
-      `Trying to withdraw from StrategyTokenBalance but contributor Account ${event.params.contributor.toHexString()} does not exist, and cannot be created`,
-      []
-    );
-    return;
-  }
-
-  let strategy = Strategy.load(event.params.strategyId.toString());
-  if (!strategy) {
-    log.error(
-      `Trying to withdraw from StrategyTokenBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
-      []
-    );
-    return;
-  }
-
-  let token = event.params.token
-  let strategyTokenBalanceId = strategy.id.concat(contributor.id.toHexString().concat(token.toHexString()));
-  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
-  if (!strategyTokenBalance) {
-    log.error(
-      `Strategy ${strategy.id} is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, and it can't be created`,
-      []
-    );
-    return
-  }
-  strategyTokenBalance.contributor = contributor.id
-  strategyTokenBalance.strategy = strategy.id
-  strategyTokenBalance.token = token
-  strategyTokenBalance.balance.minus(event.params.amount)
-  strategyTokenBalance.proposedWithdrawal = BigInt.zero()
-  strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero()
-  strategyTokenBalance.save()
-}
-
-export function handleStrategyWithdrawalProposed(
-  event: StrategyWithdrawalProposedEvent
-): void {
-  let entity = new StrategyWithdrawalProposed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.strategyId = event.params.strategyId;
-  entity.account = event.params.account;
-  entity.token = event.params.token;
-  entity.amount = event.params.amount;
-  entity.finalizeTime = event.params.finalizeTime;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -810,33 +776,82 @@ export function handleStrategyWithdrawalProposed(
     return;
   }
 
-  let token = event.params.token
-  let strategyTokenBalanceId = strategy.id.concat(contributor.id.toHexString().concat(token.toHexString()));
+  let token = event.params.token;
+  let strategyTokenBalanceId = strategy.id.concat(
+    contributor.id.toHexString().concat(token.toHexString())
+  );
   let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
   if (!strategyTokenBalance) {
     log.error(
-      `Strategy ${strategy.id} is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, and it can't be created`,
+      `Strategy ${
+        strategy.id
+      } is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, and it can't be created`,
       []
     );
-    return
+    return;
   }
-  strategyTokenBalance.contributor = contributor.id
-  strategyTokenBalance.strategy = strategy.id
-  strategyTokenBalance.token = token
-  strategyTokenBalance.proposedWithdrawal = event.params.amount
-  strategyTokenBalance.proposedWithdrawalTimestamp = event.block.timestamp
-  strategyTokenBalance.save()
+  strategyTokenBalance.contributor = contributor.id;
+  strategyTokenBalance.strategy = strategy.id;
+  strategyTokenBalance.token = token;
+  strategyTokenBalance.balance.minus(event.params.amount);
+  strategyTokenBalance.proposedWithdrawal = BigInt.zero();
+  strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero();
+  strategyTokenBalance.save();
 }
 
-export function handleUpgraded(event: UpgradedEvent): void {
-  let entity = new Upgraded(
+export function handleStrategyWithdrawalProposed(
+  event: StrategyWithdrawalProposedEvent
+): void {
+  let entity = new StrategyWithdrawalProposed(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
-  entity.implementation = event.params.implementation;
+  entity.strategyId = event.params.strategyId;
+  entity.account = event.params.account;
+  entity.token = event.params.token;
+  entity.amount = event.params.amount;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
   entity.transactionHash = event.transaction.hash;
 
   entity.save();
+
+  let contributor = Account.load(event.params.account);
+  if (!contributor) {
+    log.error(
+      `Trying to withdraw from StrategyTokenBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
+      []
+    );
+    return;
+  }
+
+  let strategy = Strategy.load(event.params.strategyId.toString());
+  if (!strategy) {
+    log.error(
+      `Trying to withdraw from StrategyTokenBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
+      []
+    );
+    return;
+  }
+
+  let token = event.params.token;
+  let strategyTokenBalanceId = strategy.id.concat(
+    contributor.id.toHexString().concat(token.toHexString())
+  );
+  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
+  if (!strategyTokenBalance) {
+    log.error(
+      `Strategy ${
+        strategy.id
+      } is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, and it can't be created`,
+      []
+    );
+    return;
+  }
+  strategyTokenBalance.contributor = contributor.id;
+  strategyTokenBalance.strategy = strategy.id;
+  strategyTokenBalance.token = token;
+  strategyTokenBalance.proposedWithdrawal = event.params.amount;
+  strategyTokenBalance.proposedWithdrawalTimestamp = event.block.timestamp;
+  strategyTokenBalance.save();
 }

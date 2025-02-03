@@ -6,18 +6,17 @@ schema:
 dataSources:
   - kind: ethereum
     name: SSVNetworkImpl
-    network: mainnet
+    network: holesky
     source:
       abi: SSVNetwork
-      address: "0xdc1e8e50673b893c16c18d88e81e13b4415f6292"
-      startBlock: 17507480
+      address: "0x116522F4D00b42Efce0aA77f7ddAd1d27705F36b"
+      startBlock: 84598
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - NewGravatar
-        - UpdatedGravatar
+        - DAOValues
       abis:
         - name: SSVNetwork
           file: ./abis/SSVNetwork.json
@@ -26,11 +25,31 @@ dataSources:
           handler: handleInitialize
       file: ./src/ssv-network.ts
   - kind: ethereum
-    name: BasedAppManager
-    network: mainnet
+    name: BasedAppManagerImpl
+    network: holesky
     source:
-      address: "0xa8D6b028c6A48eCaf5558358A17824D1493D5B0a"
       abi: BasedAppManager
+      address: "0x590C093AbF6489289741E8aC119d1c91b06500C5"
+      startBlock: 3250994
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DAOValues
+      abis:
+        - name: BasedAppManager
+          file: ./abis/BasedAppManager.json
+      callHandlers:
+        - function: initialize(address,uint32)
+          handler: handleInitialize
+      file: ./src/based-app-manager.ts
+  - kind: ethereum
+    name: BasedAppManager
+    network: holesky
+    source:
+      abi: BasedAppManager
+      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
       startBlock: 3250994
     mapping:
       kind: ethereum/events
@@ -64,7 +83,8 @@ dataSources:
       eventHandlers:
         - event: BAppMetadataURIUpdated(indexed address,string)
           handler: handleBAppMetadataURIUpdated
-        - event: BAppOptedInByStrategy(indexed uint256,indexed address,bytes,address[],uint32[])
+        - event: BAppOptedInByStrategy(indexed uint256,indexed
+            address,bytes,address[],uint32[])
           handler: handleBAppOptedInByStrategy
         - event: BAppRegistered(indexed address,indexed address,address[],uint32[],string)
           handler: handleBAppRegistered
@@ -80,39 +100,36 @@ dataSources:
           handler: handleDelegationUpdated
         - event: Initialized(uint64)
           handler: handleInitialized
-        - event: MaxFeeIncrementSet(indexed uint32)
+        - event: MaxFeeIncrementSet(uint32)
           handler: handleMaxFeeIncrementSet
-        - event: ObligationCreated(indexed uint256,indexed address,indexed address,uint256)
+        - event: ObligationCreated(indexed uint256,indexed address,address,uint256)
           handler: handleObligationCreated
-        - event: ObligationUpdateProposed(indexed uint256,indexed address,indexed
-            address,uint32,uint256)
+        - event: ObligationUpdateProposed(indexed uint256,indexed address,address,uint32)
           handler: handleObligationUpdateProposed
-        - event: ObligationUpdated(indexed uint256,indexed address,indexed address,uint256,bool)
+        - event: ObligationUpdated(indexed uint256,indexed address,address,uint256,bool)
           handler: handleObligationUpdated
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
         - event: StrategyCreated(indexed uint256,indexed address,uint32)
           handler: handleStrategyCreated
-        - event: StrategyDeposit(indexed uint256,indexed address,indexed address,uint256)
+        - event: StrategyDeposit(indexed uint256,indexed address,address,uint256)
           handler: handleStrategyDeposit
-        - event: StrategyFeeUpdateProposed(indexed uint256,address,uint32,uint32,uint256)
+        - event: StrategyFeeUpdateProposed(indexed uint256,address,uint32,uint32)
           handler: handleStrategyFeeUpdateProposed
         - event: StrategyFeeUpdated(indexed uint256,address,uint32,uint32)
           handler: handleStrategyFeeUpdated
-        - event: StrategyWithdrawal(indexed uint256,indexed address,indexed address,uint256,bool)
+        - event: StrategyWithdrawal(indexed uint256,indexed address,address,uint256,bool)
           handler: handleStrategyWithdrawal
-        - event: StrategyWithdrawalProposed(indexed uint256,indexed address,indexed
-            address,uint256,uint256)
+        - event: StrategyWithdrawalProposed(indexed uint256,indexed
+            address,address,uint256)
           handler: handleStrategyWithdrawalProposed
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
       file: ./src/based-app-manager.ts
   - kind: ethereum
     name: SSVNetwork
-    network: mainnet
+    network: holesky
     source:
-      address: "0x38A4794cCEd47d3baf7370CcC43B560D3a1beEFA"
       abi: SSVNetwork
+      address: "0x38A4794cCEd47d3baf7370CcC43B560D3a1beEFA"
       startBlock: 181612
     mapping:
       kind: ethereum/events
@@ -157,38 +174,38 @@ dataSources:
         - name: SSVNetwork
           file: ./abis/SSVNetwork.json
       eventHandlers:
-        - event: AdminChanged(address,address)
-          handler: handleAdminChanged
-        - event: BeaconUpgraded(indexed address)
-          handler: handleBeaconUpgraded
-        - event: ClusterDeposited(indexed
-            address,uint64[],uint256,(uint32,uint64,uint64,bool,uint256))
-          handler: handleClusterDeposited
-        - event: ClusterLiquidated(indexed address,uint64[],(uint32,uint64,uint64,bool,uint256))
-          handler: handleClusterLiquidated
-        - event: ClusterReactivated(indexed address,uint64[],(uint32,uint64,uint64,bool,uint256))
-          handler: handleClusterReactivated
-        - event: ClusterWithdrawn(indexed
-            address,uint64[],uint256,(uint32,uint64,uint64,bool,uint256))
-          handler: handleClusterWithdrawn
         - event: DeclareOperatorFeePeriodUpdated(uint64)
           handler: handleDeclareOperatorFeePeriodUpdated
         - event: ExecuteOperatorFeePeriodUpdated(uint64)
           handler: handleExecuteOperatorFeePeriodUpdated
         - event: FeeRecipientAddressUpdated(indexed address,address)
           handler: handleFeeRecipientAddressUpdated
-        - event: Initialized(uint8)
-          handler: handleInitialized
         - event: LiquidationThresholdPeriodUpdated(uint64)
           handler: handleLiquidationThresholdPeriodUpdated
         - event: MinimumLiquidationCollateralUpdated(uint256)
           handler: handleMinimumLiquidationCollateralUpdated
-        - event: ModuleUpgraded(indexed uint8,address)
-          handler: handleModuleUpgraded
         - event: NetworkEarningsWithdrawn(uint256,address)
           handler: handleNetworkEarningsWithdrawn
         - event: NetworkFeeUpdated(uint256,uint256)
           handler: handleNetworkFeeUpdated
+        - event: ClusterDeposited(indexed
+            address,uint64[],uint256,(uint32,uint64,uint64,bool,uint256))
+          handler: handleClusterDeposited
+        - event: ClusterLiquidated(indexed
+            address,uint64[],(uint32,uint64,uint64,bool,uint256))
+          handler: handleClusterLiquidated
+        - event: ClusterReactivated(indexed
+            address,uint64[],(uint32,uint64,uint64,bool,uint256))
+          handler: handleClusterReactivated
+        - event: ClusterWithdrawn(indexed
+            address,uint64[],uint256,(uint32,uint64,uint64,bool,uint256))
+          handler: handleClusterWithdrawn
+        - event: ValidatorAdded(indexed
+            address,uint64[],bytes,bytes,(uint32,uint64,uint64,bool,uint256))
+          handler: handleValidatorAdded
+        - event: ValidatorRemoved(indexed
+            address,uint64[],bytes,(uint32,uint64,uint64,bool,uint256))
+          handler: handleValidatorRemoved
         - event: OperatorAdded(indexed uint64,indexed address,bytes,uint256)
           handler: handleOperatorAdded
         - event: OperatorFeeDeclarationCancelled(indexed address,indexed uint64)
@@ -201,32 +218,18 @@ dataSources:
           handler: handleOperatorFeeIncreaseLimitUpdated
         - event: OperatorMaximumFeeUpdated(uint64)
           handler: handleOperatorMaximumFeeUpdated
-        - event: OperatorWhitelistUpdated(indexed uint64,address)
-          handler: handleOperatorWhitelistUpdated
-        - event: OperatorMultipleWhitelistRemoved(uint64[],address[])
-          handler: handleOperatorMultipleWhitelistRemoved
-        - event: OperatorMultipleWhitelistUpdated(uint64[],address[])
-          handler: handleOperatorMultipleWhitelistUpdated
-        - event: OperatorPrivacyStatusUpdated(uint64[],bool)
-          handler: handleOperatorPrivacyStatusUpdated
         - event: OperatorRemoved(indexed uint64)
           handler: handleOperatorRemoved
+        - event: OperatorWhitelistUpdated(indexed uint64,address)
+          handler: handleOperatorWhitelistUpdated
+        - event: OperatorMultipleWhitelistUpdated(uint64[],address[])
+          handler: handleOperatorMultipleWhitelistUpdated
+        - event: OperatorMultipleWhitelistRemoved(uint64[],address[])
+          handler: handleOperatorMultipleWhitelistRemoved
         - event: OperatorWhitelistingContractUpdated(uint64[],address)
           handler: handleOperatorWhitelistingContractUpdated
+        - event: OperatorPrivacyStatusUpdated(uint64[],bool)
+          handler: handleOperatorPrivacyStatusUpdated
         - event: OperatorWithdrawn(indexed address,indexed uint64,uint256)
           handler: handleOperatorWithdrawn
-        - event: OwnershipTransferStarted(indexed address,indexed address)
-          handler: handleOwnershipTransferStarted
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
-        - event: ValidatorAdded(indexed
-            address,uint64[],bytes,bytes,(uint32,uint64,uint64,bool,uint256))
-          handler: handleValidatorAdded
-        - event: ValidatorExited(indexed address,uint64[],bytes)
-          handler: handleValidatorExited
-        - event: ValidatorRemoved(indexed
-            address,uint64[],bytes,(uint32,uint64,uint64,bool,uint256))
-          handler: handleValidatorRemoved
       file: ./src/ssv-network.ts
