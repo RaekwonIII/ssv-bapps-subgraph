@@ -248,6 +248,7 @@ export function handleBAppTokensCreated(event: BAppTokensCreatedEvent): void {
         []
       );
       sharedRiskLevel = new SharedRiskLevel(sharedRiskLevelId);
+      sharedRiskLevel.bApp = event.params.bAppAddress;
       sharedRiskLevel.token = token;
       sharedRiskLevel.sharedRiskLevel = sharedRiskLevelValue;
       sharedRiskLevel.save();
@@ -674,12 +675,17 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
 
   let contributor = Account.load(event.params.account);
   if (!contributor) {
-    log.error(
-      `Trying to create new StrategyTokenBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
+    log.info(
+      `Trying to create new StrategyTokenBalance but owner account ${event.params.account.toHexString()} does not exist, creating it`,
       []
     );
-    return;
+    contributor = new Account(event.params.account);
+    contributor.nonce = BigInt.zero();
+    contributor.validatorCount = BigInt.zero();
+    contributor.feeRecipient = event.params.account;
+    contributor.totalDelegatedPercentage = BigInt.zero();
   }
+  contributor.save();
 
   let strategy = Strategy.load(event.params.strategyId.toString());
   if (!strategy) {
