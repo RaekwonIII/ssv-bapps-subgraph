@@ -524,7 +524,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
   strategyTokenBalance.save();
 
   let obligatedBalance = strategyTokenBalance.balance.times(
-    obligation.percentage
+    percentage
   );
 
   let bAppToken = BAppToken.load(
@@ -543,6 +543,7 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
 
   // update obligated balance, along other things
   obligation.obligatedBalance = obligatedBalance;
+  obligation.strategyBAppOptIn = strategyBAppOptInId
   obligation.token = token;
   obligation.percentage = percentage;
   obligation.percentageProposed = percentage;
@@ -635,7 +636,7 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
   strategyTokenBalance.save();
 
   let obligatedBalance = strategyTokenBalance.balance.times(
-    obligation.percentage
+    percentage
   );
 
   let bAppToken = BAppToken.load(
