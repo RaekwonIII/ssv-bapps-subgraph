@@ -59,11 +59,14 @@ export function handleInitialize(call: InitializeCall): void {
   let implementationContract = call.from;
 
   log.info(
-    `New contract Initialized, DAO values store with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
+    `New contract Initialized, Bapp Constant values stored with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
     []
   );
   let bAppConstants = new BAppConstants(implementationContract);
   bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
+  bAppConstants.totalAccounts = BigInt.zero()
+  bAppConstants.totalBApps = BigInt.zero()
+  bAppConstants.totalStrategies = BigInt.zero()
 
   bAppConstants.save();
 }
@@ -155,6 +158,12 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
 
   entity.save();
 
+  let bAppConstants = BAppConstants.load(event.address);
+  if (!bAppConstants){
+    console.error("bappConstants does not exist")
+    return
+  }
+
   let owner = Account.load(event.params.owner);
   if (!owner) {
     log.info(
@@ -166,6 +175,7 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     owner.validatorCount = BigInt.zero();
     owner.feeRecipient = event.params.owner;
     owner.totalDelegatedPercentage = BigInt.zero();
+    bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(BigInt.fromI32(1))
   }
   owner.save();
 
@@ -199,6 +209,8 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     bAppToken.save();
   }
   bApp.save();
+  bAppConstants.totalBApps = bAppConstants.totalBApps.plus(BigInt.fromI32(1))
+  bAppConstants.save();
 }
 
 export function handleBAppTokensCreated(event: BAppTokensCreatedEvent): void {
@@ -285,6 +297,12 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
 
   entity.save();
 
+  let bAppConstants = BAppConstants.load(event.address);
+  if (!bAppConstants){
+    console.error("bappConstants does not exist")
+    return
+  }
+
   let delegator = Account.load(event.params.delegator);
   if (!delegator) {
     log.info(
@@ -296,6 +314,8 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     delegator.validatorCount = BigInt.zero();
     delegator.feeRecipient = event.params.delegator;
     delegator.totalDelegatedPercentage = BigInt.zero();
+    bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(BigInt.fromI32(1))
+    bAppConstants.save();
   }
   delegator.totalDelegatedPercentage = delegator.totalDelegatedPercentage.plus(
     event.params.percentage
@@ -313,6 +333,8 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     receiver.validatorCount = BigInt.zero();
     receiver.feeRecipient = event.params.receiver;
     receiver.totalDelegatedPercentage = BigInt.zero();
+    bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(BigInt.fromI32(1))
+    bAppConstants.save();
     receiver.save();
   }
 
@@ -691,6 +713,12 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
 
   entity.save();
 
+  let bAppConstants = BAppConstants.load(event.address);
+  if (!bAppConstants){
+    console.error("bappConstants does not exist")
+    return
+  }
+
   let owner = Account.load(event.params.owner);
   if (!owner) {
     log.info(
@@ -702,6 +730,7 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
     owner.validatorCount = BigInt.zero();
     owner.feeRecipient = event.params.owner;
     owner.totalDelegatedPercentage = BigInt.zero();
+    bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(BigInt.fromI32(1))
   }
   owner.save();
 
@@ -717,6 +746,9 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
   strategy.feeProposed = event.params.fee;
   strategy.feeProposedTimestamp = event.block.timestamp;
   strategy.save();
+  bAppConstants.totalStrategies = bAppConstants.totalStrategies.plus(BigInt.fromI32(1))
+  bAppConstants.save();
+
 }
 
 export function handleStrategyDeposit(event: StrategyDepositEvent): void {
@@ -734,6 +766,12 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
 
   entity.save();
 
+  let bAppConstants = BAppConstants.load(event.address);
+  if (!bAppConstants){
+    console.error("bappConstants does not exist")
+    return
+  }
+
   let contributor = Account.load(event.params.account);
   if (!contributor) {
     log.info(
@@ -745,6 +783,8 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
     contributor.validatorCount = BigInt.zero();
     contributor.feeRecipient = event.params.account;
     contributor.totalDelegatedPercentage = BigInt.zero();
+    bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(BigInt.fromI32(1))
+    bAppConstants.save();
   }
   contributor.save();
 
