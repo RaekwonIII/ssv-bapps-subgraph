@@ -1,4 +1,4 @@
-import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { BigDecimal, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import {
   BAppMetadataURIUpdated as BAppMetadataURIUpdatedEvent,
   BAppOptedInByStrategy as BAppOptedInByStrategyEvent,
@@ -21,7 +21,6 @@ import {
   StrategyFeeUpdated as StrategyFeeUpdatedEvent,
   StrategyWithdrawal as StrategyWithdrawalEvent,
   StrategyWithdrawalProposed as StrategyWithdrawalProposedEvent,
-  Upgraded as UpgradedEvent,
 } from "../generated/BasedAppManager/BasedAppManager";
 import {
   Account,
@@ -43,34 +42,30 @@ import {
   ObligationUpdateProposed,
   ObligationUpdated,
   OwnershipTransferred,
-  SharedRiskLevel,
+  BAppToken,
   Strategy,
   StrategyBAppOptIn,
   StrategyCreated,
   StrategyDeposit,
   StrategyFeeUpdateProposed,
   StrategyFeeUpdated,
-  StrategyTokenBalance,
+  StrategyUserBalance,
   StrategyWithdrawal,
   StrategyWithdrawalProposed,
-  Upgraded,
+  StrategyTokenBalance,
 } from "../generated/schema";
 
-export function handleInitialize(
-  call: InitializeCall
-): void {
-  let implementationContract = call.from
-  if (!implementationContract.toHexString().toLowerCase().includes("0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317") && !implementationContract.toHexString().toLowerCase().includes("0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"))
-  {
-    log.error(`Caller is ${implementationContract.toHexString()}, but we only expect 0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317`,[])
-    return
-  }
+export function handleInitialize(call: InitializeCall): void {
+  let implementationContract = call.from;
 
-  log.info(`New contract Initialized, DAO values store with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`, [])
-  let bAppConstants = new BAppConstants(implementationContract)
-  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement
+  log.info(
+    `New contract Initialized, DAO values store with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
+    []
+  );
+  let bAppConstants = new BAppConstants(implementationContract);
+  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
 
-  bAppConstants.save()
+  bAppConstants.save();
 }
 
 export function handleBAppMetadataURIUpdated(
@@ -136,27 +131,11 @@ export function handleBAppOptedInByStrategy(
   let obligationsList: string[] = [];
   for (var i = 0; i < event.params.tokens.length; i++) {
     let token = event.params.tokens[i];
-    // let percentage = event.params.obligationPercentages[i];
     let obligationId = strategyBAppOptInId.concat(token.toHexString());
-    // let obligation = Obligation.load(obligationId);
-    // if (!obligation) {
-    //   log.info(
-    //     `New Obligation created ${obligationId} as Strategy ${
-    //       event.params.strategyId
-    //     } has opted in to BApp ${event.params.bApp.toHexString()}`,
-    //     []
-    //   );
-    //   obligation = new Obligation(obligationId);
-    //   obligation.token = token;
-    //   obligation.percentage = percentage;
-    //   obligation.save();
-    // }
     obligationsList.push(obligationId);
   }
-  // Setting the list of obligations in the Strategy <=> BApp mapping table (the StrategyBAppOptIn <> Obligations relation is not derived from a field)
   strategyBAppOptIn.bApp = event.params.bApp;
   strategyBAppOptIn.strategy = event.params.strategyId.toString();
-  strategyBAppOptIn.obligations = obligationsList;
   strategyBAppOptIn.save();
 }
 
@@ -205,18 +184,19 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     let token = event.params.tokens[i];
     let sharedRiskLevelValue = event.params.sharedRiskLevel[i];
     let sharedRiskLevelId = bApp.id.toHexString().concat(token.toHexString());
-    let sharedRiskLevel = SharedRiskLevel.load(sharedRiskLevelId);
-    if (!sharedRiskLevel) {
+    let bAppToken = BAppToken.load(sharedRiskLevelId);
+    if (!bAppToken) {
       log.info(
-        `New SharedRiskLevel created ${sharedRiskLevelId} as BApp ${event.params.bAppAddress.toHexString()} is created, and supports token ${token.toHexString()}`,
+        `New BAppToken created ${sharedRiskLevelId} as BApp ${event.params.bAppAddress.toHexString()} is created, and supports token ${token.toHexString()}`,
         []
       );
-      sharedRiskLevel = new SharedRiskLevel(sharedRiskLevelId);
-      sharedRiskLevel.token = token;
-      sharedRiskLevel.sharedRiskLevel = sharedRiskLevelValue;
-      sharedRiskLevel.bApp = bApp.id;
-      sharedRiskLevel.save();
+      bAppToken = new BAppToken(sharedRiskLevelId);
+      bAppToken.totalObligatedBalance = BigInt.zero();
     }
+    bAppToken.token = token;
+    bAppToken.sharedRiskLevel = sharedRiskLevelValue;
+    bAppToken.bApp = bApp.id;
+    bAppToken.save();
   }
   bApp.save();
 }
@@ -241,18 +221,19 @@ export function handleBAppTokensCreated(event: BAppTokensCreatedEvent): void {
     let sharedRiskLevelId = event.params.bAppAddress
       .toHexString()
       .concat(token.toHexString());
-    let sharedRiskLevel = SharedRiskLevel.load(sharedRiskLevelId);
-    if (!sharedRiskLevel) {
+    let bAppToken = BAppToken.load(sharedRiskLevelId);
+    if (!bAppToken) {
       log.info(
-        `New SharedRiskLevel created ${sharedRiskLevelId} as new token ${token.toHexString()} is supported by BApp ${event.params.bAppAddress.toHexString()}`,
+        `New BAppToken created ${sharedRiskLevelId} as new token ${token.toHexString()} is supported by BApp ${event.params.bAppAddress.toHexString()}`,
         []
       );
-      sharedRiskLevel = new SharedRiskLevel(sharedRiskLevelId);
-      sharedRiskLevel.bApp = event.params.bAppAddress;
-      sharedRiskLevel.token = token;
-      sharedRiskLevel.sharedRiskLevel = sharedRiskLevelValue;
-      sharedRiskLevel.save();
+      bAppToken = new BAppToken(sharedRiskLevelId);
+      bAppToken.totalObligatedBalance = BigInt.zero();
     }
+    bAppToken.bApp = event.params.bAppAddress;
+    bAppToken.token = token;
+    bAppToken.sharedRiskLevel = sharedRiskLevelValue;
+    bAppToken.save();
   }
 }
 
@@ -276,10 +257,10 @@ export function handleBAppTokensUpdated(event: BAppTokensUpdatedEvent): void {
     let sharedRiskLevelId = event.params.bAppAddress
       .toHexString()
       .concat(token.toHexString());
-    let sharedRiskLevel = SharedRiskLevel.load(sharedRiskLevelId);
+    let sharedRiskLevel = BAppToken.load(sharedRiskLevelId);
     if (!sharedRiskLevel) {
       log.error(
-        `Trying to update SharedRiskLevel ${sharedRiskLevelId} for BApp ${event.params.bAppAddress.toHexString()}, as token ${token.toHexString()} risk level has changed, but SharedRiskLevel does not exist and cannot be created`,
+        `Trying to update BAppToken ${sharedRiskLevelId} for BApp ${event.params.bAppAddress.toHexString()}, as token ${token.toHexString()} risk level has changed, but BAppToken does not exist and cannot be created`,
         []
       );
     } else {
@@ -331,7 +312,7 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     receiver.nonce = BigInt.zero();
     receiver.validatorCount = BigInt.zero();
     receiver.feeRecipient = event.params.receiver;
-    receiver.totalDelegatedPercentage = BigInt.zero()
+    receiver.totalDelegatedPercentage = BigInt.zero();
     receiver.save();
   }
 
@@ -505,27 +486,67 @@ export function handleObligationCreated(event: ObligationCreatedEvent): void {
 
   entity.save();
 
+  // Creating the Obligation itself
+  let strategyId = event.params.strategyId.toString();
   let token = event.params.token;
   let percentage = event.params.percentage;
-  let strategyBAppOptInId = event.params.strategyId
+  let strategyBAppOptInId = strategyId
     .toString()
     .concat(event.params.bApp.toHexString());
   let obligationId = strategyBAppOptInId.concat(token.toHexString());
   let obligation = Obligation.load(obligationId);
   if (!obligation) {
     log.info(
-      `New Obligation created ${obligationId} as Strategy ${
-        event.params.strategyId
-      } has opted in to BApp ${event.params.bApp.toHexString()}`,
+      `New Obligation created ${obligationId} as Strategy ${strategyId} has opted in to BApp ${event.params.bApp.toHexString()}`,
       []
     );
     obligation = new Obligation(obligationId);
-    obligation.token = token;
-    obligation.percentage = percentage;
-    obligation.percentageProposed = percentage;
     obligation.percentageProposedTimestamp = BigInt.zero();
-    obligation.save();
+    obligation.obligatedBalance = BigInt.zero();
   }
+
+  let strategyTokenBalance = StrategyTokenBalance.load(
+    strategyId.concat(token.toHexString())
+  );
+  if (!strategyTokenBalance) {
+    log.info(
+      `Trying to update the balance for token ${token.toHexString()} on Strategy ${strategyId}, but the balance does not exist, creating it.`,
+      []
+    );
+    strategyTokenBalance = new StrategyTokenBalance(strategyId.concat(token.toHexString()))
+    strategyTokenBalance.balance = BigInt.zero()
+    strategyTokenBalance.riskValue = BigInt.zero()
+    strategyTokenBalance.strategy = strategyId
+    strategyTokenBalance.token = token
+  }
+  // update the risk value for this token by adding the % of this obligation
+  strategyTokenBalance.riskValue = strategyTokenBalance.riskValue.plus(percentage)
+  strategyTokenBalance.save();
+
+  let obligatedBalance = strategyTokenBalance.balance.times(
+    obligation.percentage
+  );
+
+  let bAppToken = BAppToken.load(
+    event.params.bApp.toHexString().concat(token.toHexString())
+  );
+  if (!bAppToken) {
+    log.error(
+      `Trying to update the total balance obligated to BApp ${event.params.bApp.toHexString()} but the related token entity does not exist, and it can't be created`,
+      []
+    );
+    return;
+  }
+  // subtract old obligated balance, add new obligated balance
+  bAppToken.totalObligatedBalance.minus(obligation.obligatedBalance).plus(obligatedBalance);
+  bAppToken.save();
+
+  // update obligated balance, along other things
+  obligation.obligatedBalance = obligatedBalance;
+  obligation.token = token;
+  obligation.percentage = percentage;
+  obligation.percentageProposed = percentage;
+  obligation.save();
 }
 
 export function handleObligationUpdateProposed(
@@ -545,24 +566,24 @@ export function handleObligationUpdateProposed(
 
   entity.save();
 
-  // let token = event.params.token;
-  // let percentage = event.params.percentage;
-  // let strategyBAppOptInId = event.params.strategyId
-  //   .toString()
-  //   .concat(event.params.bApp.toHexString())
-  // let obligationId = strategyBAppOptInId.concat(token.toHexString());
-  // let obligation = Obligation.load(obligationId);
-  // if (!obligation) {
-  //   log.error(
-  //     `Obligation ${obligationId} is being updated but it does not exist, and it can't be created`,
-  //     []
-  //   );
-  //   return
-  // }
-  // obligation.token = token;
-  // obligation.percentageProposedTimestamp = event.block.timestamp;
-  // obligation.percentage = obligation.percentageProposed;
-  // obligation.save();
+  let token = event.params.token;
+  let strategyBAppOptInId = event.params.strategyId
+    .toString()
+    .concat(event.params.bApp.toHexString());
+  let obligationId = strategyBAppOptInId.concat(token.toHexString());
+  let obligation = Obligation.load(obligationId);
+  if (!obligation) {
+    log.error(
+      `Obligation ${obligationId} is being updated but it does not exist, and it can't be created`,
+      []
+    );
+    return;
+  }
+  obligation.token = token;
+  obligation.percentageProposed = event.params.percentage;
+  obligation.percentageProposedTimestamp = event.block.timestamp;
+  obligation.percentage = obligation.percentageProposed;
+  obligation.save();
 }
 
 export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
@@ -580,6 +601,9 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
   entity.transactionHash = event.transaction.hash;
 
   entity.save();
+
+  let strategyId = event.params.strategyId.toString()
+  let percentage = event.params.percentage
   let token = event.params.token;
 
   // need to copy the percentage from `percentageProposed`
@@ -595,8 +619,44 @@ export function handleObligationUpdated(event: ObligationUpdatedEvent): void {
     );
     return;
   }
+
+  let strategyTokenBalance = StrategyTokenBalance.load(
+    strategyId.concat(token.toHexString())
+  );
+  if (!strategyTokenBalance) {
+    log.error(
+      `Trying to update the balance for token ${token.toHexString()} on Strategy ${strategyId}, but the balance does not exist, and it cannot be created.`,
+      []
+    );
+    return
+  }
+  // update the risk value for this token by adding the % of this obligation
+  strategyTokenBalance.riskValue = strategyTokenBalance.riskValue.plus(percentage)
+  strategyTokenBalance.save();
+
+  let obligatedBalance = strategyTokenBalance.balance.times(
+    obligation.percentage
+  );
+
+  let bAppToken = BAppToken.load(
+    event.params.bApp.toHexString().concat(token.toHexString())
+  );
+  if (!bAppToken) {
+    log.error(
+      `Trying to update the total balance obligated to BApp ${event.params.bApp.toHexString()} but the related token entity does not exist, and it can't be created`,
+      []
+    );
+    return;
+  }
+  // subtract old obligated balance, add new obligated balance
+  bAppToken.totalObligatedBalance.minus(obligation.obligatedBalance).plus(obligatedBalance);
+  bAppToken.save();
+
+  // update obligated balance, along other things
+  obligation.obligatedBalance = obligatedBalance;
   obligation.token = token;
-  obligation.percentage = obligation.percentageProposed;
+  obligation.percentage = percentage;
+  obligation.percentageProposed = percentage;
   obligation.save();
 }
 
@@ -676,7 +736,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   let contributor = Account.load(event.params.account);
   if (!contributor) {
     log.info(
-      `Trying to create new StrategyTokenBalance but owner account ${event.params.account.toHexString()} does not exist, creating it`,
+      `Trying to create new StrategyUserBalance but owner account ${event.params.account.toHexString()} does not exist, creating it`,
       []
     );
     contributor = new Account(event.params.account);
@@ -690,7 +750,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   let strategy = Strategy.load(event.params.strategyId.toString());
   if (!strategy) {
     log.error(
-      `Trying to create StrategyTokenBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
+      `Trying to create StrategyUserBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
       []
     );
     return;
@@ -700,24 +760,62 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   let strategyTokenBalanceId = strategy.id.concat(
     contributor.id.toHexString().concat(token.toHexString())
   );
-  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
-  if (!strategyTokenBalance) {
+  let strategyUserBalance = StrategyUserBalance.load(strategyTokenBalanceId);
+  if (!strategyUserBalance) {
     log.info(
       `Strategy ${
         strategy.id
       } is receiving a deposit of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
       []
     );
-    strategyTokenBalance = new StrategyTokenBalance(strategyTokenBalanceId);
-    strategyTokenBalance.balance = BigInt.zero();
-    strategyTokenBalance.contributor = contributor.id;
-    strategyTokenBalance.strategy = strategy.id;
-    strategyTokenBalance.token = token;
-    strategyTokenBalance.proposedWithdrawal = BigInt.zero();
-    strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero();
+    strategyUserBalance = new StrategyUserBalance(strategyTokenBalanceId);
+    strategyUserBalance.depositAmount = BigInt.zero();
+    strategyUserBalance.contributor = contributor.id;
+    strategyUserBalance.strategy = strategy.id;
+    strategyUserBalance.token = token;
+    strategyUserBalance.proposedWithdrawal = BigInt.zero();
+    strategyUserBalance.proposedWithdrawalTimestamp = BigInt.zero();
   }
-  strategyTokenBalance.balance.plus(event.params.amount);
-  strategyTokenBalance.save();
+  strategyUserBalance.depositAmount.plus(event.params.amount);
+  strategyUserBalance.save();
+
+  let strategyBAppOptIns = strategy.bApps.load();
+
+  for (var i = 0; i < strategyBAppOptIns.length; i++) {
+    let strategyBAppOptIn = strategyBAppOptIns[i];
+    let obligations = strategyBAppOptIn.obligations.load();
+
+    let obligatedBalanceDelta = BigInt.zero();
+    for (let j = 0; j < obligations.length; j++) {
+      let obligation = obligations[j];
+      if (obligation.token == token) {
+        obligatedBalanceDelta = event.params.amount.times(
+          obligation.percentage
+        );
+        obligation.obligatedBalance = obligation.obligatedBalance.plus(
+          obligatedBalanceDelta
+        );
+        obligation.save();
+      }
+    }
+
+    let bAppToken = BAppToken.load(
+      strategyBAppOptIn.bApp.toHexString().concat(token.toHexString())
+    );
+    if (!bAppToken) {
+      log.error(
+        `Strategy ${
+          strategy.id
+        } is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}. Trying to update the total balance obligated to BApp ${
+          strategyBAppOptIn.bApp
+        } but the related token entity does not exist, and it can't be created`,
+        []
+      );
+      return;
+    }
+    bAppToken.totalObligatedBalance.plus(obligatedBalanceDelta);
+    bAppToken.save();
+  }
 }
 
 export function handleStrategyFeeUpdateProposed(
@@ -800,7 +898,7 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   let contributor = Account.load(event.params.account);
   if (!contributor) {
     log.error(
-      `Trying to withdraw from StrategyTokenBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
+      `Trying to withdraw from StrategyUserBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
       []
     );
     return;
@@ -809,7 +907,7 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   let strategy = Strategy.load(event.params.strategyId.toString());
   if (!strategy) {
     log.error(
-      `Trying to withdraw from StrategyTokenBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
+      `Trying to withdraw from StrategyUserBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
       []
     );
     return;
@@ -819,7 +917,7 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   let strategyTokenBalanceId = strategy.id.concat(
     contributor.id.toHexString().concat(token.toHexString())
   );
-  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
+  let strategyTokenBalance = StrategyUserBalance.load(strategyTokenBalanceId);
   if (!strategyTokenBalance) {
     log.error(
       `Strategy ${
@@ -832,10 +930,48 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   strategyTokenBalance.contributor = contributor.id;
   strategyTokenBalance.strategy = strategy.id;
   strategyTokenBalance.token = token;
-  strategyTokenBalance.balance.minus(event.params.amount);
+  strategyTokenBalance.depositAmount.minus(event.params.amount);
   strategyTokenBalance.proposedWithdrawal = BigInt.zero();
   strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero();
   strategyTokenBalance.save();
+
+  let strategyBAppOptIns = strategy.bApps.load();
+
+  for (var i = 0; i < strategyBAppOptIns.length; i++) {
+    let strategyBAppOptIn = strategyBAppOptIns[i];
+    let obligations = strategyBAppOptIn.obligations.load();
+
+    let obligatedBalanceDelta = BigInt.zero();
+    for (let j = 0; j < obligations.length; j++) {
+      let obligation = obligations[j];
+      if (obligation.token == token) {
+        obligatedBalanceDelta = event.params.amount.times(
+          obligation.percentage
+        );
+        obligation.obligatedBalance = obligation.obligatedBalance.minus(
+          obligatedBalanceDelta
+        );
+        obligation.save();
+      }
+    }
+
+    let bAppToken = BAppToken.load(
+      strategyBAppOptIn.bApp.toHexString().concat(token.toHexString())
+    );
+    if (!bAppToken) {
+      log.error(
+        `Strategy ${
+          strategy.id
+        } is being withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}. Trying to update the total balance obligated to BApp ${
+          strategyBAppOptIn.bApp
+        } but the related token entity does not exist, and it can't be created`,
+        []
+      );
+      return;
+    }
+    bAppToken.totalObligatedBalance.minus(obligatedBalanceDelta);
+    bAppToken.save();
+  }
 }
 
 export function handleStrategyWithdrawalProposed(
@@ -858,7 +994,7 @@ export function handleStrategyWithdrawalProposed(
   let contributor = Account.load(event.params.account);
   if (!contributor) {
     log.error(
-      `Trying to withdraw from StrategyTokenBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
+      `Trying to withdraw from StrategyUserBalance but contributor Account ${event.params.account.toHexString()} does not exist, and cannot be created`,
       []
     );
     return;
@@ -867,7 +1003,7 @@ export function handleStrategyWithdrawalProposed(
   let strategy = Strategy.load(event.params.strategyId.toString());
   if (!strategy) {
     log.error(
-      `Trying to withdraw from StrategyTokenBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
+      `Trying to withdraw from StrategyUserBalance but receiving Strategy ${event.params.strategyId} does not exist, and cannot be created`,
       []
     );
     return;
@@ -877,7 +1013,7 @@ export function handleStrategyWithdrawalProposed(
   let strategyTokenBalanceId = strategy.id.concat(
     contributor.id.toHexString().concat(token.toHexString())
   );
-  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
+  let strategyTokenBalance = StrategyUserBalance.load(strategyTokenBalanceId);
   if (!strategyTokenBalance) {
     log.error(
       `Strategy ${

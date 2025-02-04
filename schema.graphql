@@ -1,16 +1,17 @@
 type BApp @entity(immutable: false) {
   id: Bytes! # address
   owner: Account! # address
-  bAppTokens: [SharedRiskLevel!]! @derivedFrom(field: "bApp")
+  bAppTokens: [BAppToken!]! @derivedFrom(field: "bApp")
   metadataURI: String
   strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
 }
 
-type SharedRiskLevel @entity(immutable: false) {
-  id: String!
+type BAppToken @entity(immutable: false) {
+  id: String! # Set to `bApp.id.concat(token.id);`
   bApp: BApp!
   token: Bytes!
   sharedRiskLevel: BigInt!
+  totalObligatedBalance: BigInt!
 }
 
 type Strategy @entity(immutable: false) {
@@ -21,6 +22,7 @@ type Strategy @entity(immutable: false) {
   feeProposed: BigInt! # uint256
   feeProposedTimestamp: BigInt! # uint256
   bApps: [StrategyBAppOptIn!]! @derivedFrom(field: "strategy")
+  deposits: [StrategyUserBalance!]! @derivedFrom(field: "strategy")
   balances: [StrategyTokenBalance!]! @derivedFrom(field: "strategy")
 }
 
@@ -28,25 +30,35 @@ type StrategyBAppOptIn @entity(immutable: false) {
   id: String! # Set to `strategy.id.concat(bApp.id)`
   strategy: Strategy!
   bApp: BApp!
-  obligations: [Obligation!]!
+  obligations: [Obligation!]! @derivedFrom(field: "strategyBAppOptIn")
 }
 
 type Obligation @entity(immutable: false) {
   id: String! # Set to `StrategyBAppOptIn.id.concat(token.id)`
   token: Bytes! # address
+  obligatedBalance: BigInt!
+  percentage: BigInt!
   percentageProposed: BigInt!
   percentageProposedTimestamp: BigInt! # uint256
-  percentage: BigInt!
+  strategyBAppOptIn: StrategyBAppOptIn!
 }
 
-type StrategyTokenBalance @entity(immutable: false) {
+type StrategyUserBalance @entity(immutable: false) {
   id: String! # Set to `strategy.id.concat(account.id.concat(token.id))`
   contributor: Account!
   strategy: Strategy!
   token: Bytes! # address
-  balance: BigInt!
+  depositAmount: BigInt!
   proposedWithdrawal: BigInt!
   proposedWithdrawalTimestamp: BigInt!
+}
+
+type StrategyTokenBalance @entity(immutable: false) {
+  id: String! # Set to `strategy.id.concat(token.id))`
+  strategy: Strategy!
+  token: Bytes! # address
+  balance: BigInt!
+  riskValue: BigInt!
 }
 
 type Account @entity(immutable: false) {
@@ -64,7 +76,7 @@ type Account @entity(immutable: false) {
   totalDelegatedPercentage: BigInt! # uint256
   delegators: [Delegation!]! @derivedFrom(field: "receiver")
   receivers: [Delegation!]! @derivedFrom(field: "delegator")
-  strategyTokenBalances: [StrategyTokenBalance!]! @derivedFrom(field: "contributor")
+  deposits: [StrategyUserBalance!]! @derivedFrom(field: "contributor")
 }
 
 type BAppConstants @entity(immutable: false) {
