@@ -158,8 +158,7 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
 
   entity.save();
 
-  let implementationContract = event.address;
-  let bAppConstants = new BAppConstants(implementationContract);
+  let bAppConstants = BAppConstants.load(event.address);
   if (!bAppConstants){
     console.error("bappConstants does not exist")
     return
@@ -298,8 +297,7 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
 
   entity.save();
 
-  let implementationContract = event.address;
-  let bAppConstants = new BAppConstants(implementationContract);
+  let bAppConstants = BAppConstants.load(event.address);
   if (!bAppConstants){
     console.error("bappConstants does not exist")
     return
@@ -715,8 +713,7 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
 
   entity.save();
 
-  let implementationContract = event.address;
-  let bAppConstants = new BAppConstants(implementationContract);
+  let bAppConstants = BAppConstants.load(event.address);
   if (!bAppConstants){
     console.error("bappConstants does not exist")
     return
@@ -769,8 +766,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
 
   entity.save();
 
-  let implementationContract = event.address;
-  let bAppConstants = new BAppConstants(implementationContract);
+  let bAppConstants = BAppConstants.load(event.address);
   if (!bAppConstants){
     console.error("bappConstants does not exist")
     return
