@@ -82,6 +82,9 @@ type Account @entity(immutable: false) {
 type BAppConstants @entity(immutable: false) {
   id: Bytes! # address
   _maxFeeIncrement: BigInt!
+  totalAccounts: BigInt!
+  totalBApps: BigInt!
+  totalStrategies: BigInt!
 }
 
 type Delegation @entity(immutable: false) {
