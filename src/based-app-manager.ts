@@ -758,10 +758,10 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   }
 
   let token = event.params.token;
-  let strategyTokenBalanceId = strategy.id.concat(
+  let strategyUserBalanceId = strategy.id.concat(
     contributor.id.toHexString().concat(token.toHexString())
   );
-  let strategyUserBalance = StrategyUserBalance.load(strategyTokenBalanceId);
+  let strategyUserBalance = StrategyUserBalance.load(strategyUserBalanceId);
   if (!strategyUserBalance) {
     log.info(
       `Strategy ${
@@ -769,7 +769,7 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
       } is receiving a deposit of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
       []
     );
-    strategyUserBalance = new StrategyUserBalance(strategyTokenBalanceId);
+    strategyUserBalance = new StrategyUserBalance(strategyUserBalanceId);
     strategyUserBalance.depositAmount = BigInt.zero();
     strategyUserBalance.contributor = contributor.id;
     strategyUserBalance.strategy = strategy.id;
@@ -781,6 +781,24 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
   strategyUserBalance.save();
 
   let strategyBAppOptIns = strategy.bApps.load();
+
+  let strategyTokenBalanceId = strategy.id.concat(token.toHexString());
+  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
+  if (!strategyTokenBalance) {
+    log.info(
+      `Strategy ${
+        strategy.id
+      } is receiving a deposit of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
+      []
+    );
+    strategyTokenBalance = new StrategyTokenBalance(strategyUserBalanceId);
+    strategyTokenBalance.strategy = strategy.id;
+    strategyTokenBalance.token = token;
+    strategyTokenBalance.balance = BigInt.zero()
+    strategyTokenBalance.riskValue = BigInt.zero()
+    }
+  strategyTokenBalance.balance.plus(event.params.amount);
+  strategyTokenBalance.save();
 
   for (var i = 0; i < strategyBAppOptIns.length; i++) {
     let strategyBAppOptIn = strategyBAppOptIns[i];
@@ -915,11 +933,11 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
   }
 
   let token = event.params.token;
-  let strategyTokenBalanceId = strategy.id.concat(
+  let strategyUserBalanceId = strategy.id.concat(
     contributor.id.toHexString().concat(token.toHexString())
   );
-  let strategyTokenBalance = StrategyUserBalance.load(strategyTokenBalanceId);
-  if (!strategyTokenBalance) {
+  let strategyUserBalance = StrategyUserBalance.load(strategyUserBalanceId);
+  if (!strategyUserBalance) {
     log.error(
       `Strategy ${
         strategy.id
@@ -928,12 +946,26 @@ export function handleStrategyWithdrawal(event: StrategyWithdrawalEvent): void {
     );
     return;
   }
-  strategyTokenBalance.contributor = contributor.id;
-  strategyTokenBalance.strategy = strategy.id;
-  strategyTokenBalance.token = token;
-  strategyTokenBalance.depositAmount.minus(event.params.amount);
-  strategyTokenBalance.proposedWithdrawal = BigInt.zero();
-  strategyTokenBalance.proposedWithdrawalTimestamp = BigInt.zero();
+  strategyUserBalance.contributor = contributor.id;
+  strategyUserBalance.strategy = strategy.id;
+  strategyUserBalance.token = token;
+  strategyUserBalance.depositAmount.minus(event.params.amount);
+  strategyUserBalance.proposedWithdrawal = BigInt.zero();
+  strategyUserBalance.proposedWithdrawalTimestamp = BigInt.zero();
+  strategyUserBalance.save();
+
+  let strategyTokenBalanceId = strategy.id.concat(token.toHexString());
+  let strategyTokenBalance = StrategyTokenBalance.load(strategyTokenBalanceId);
+  if (!strategyTokenBalance) {
+    log.error(
+      `Strategy ${
+        strategy.id
+      } is receiving withdrawn of token ${token.toHexString()} by address ${contributor.id.toHexString()}, but the entity does not exist, creating it`,
+      []
+    );
+    return
+    }
+  strategyTokenBalance.balance.minus(event.params.amount);
   strategyTokenBalance.save();
 
   let strategyBAppOptIns = strategy.bApps.load();
