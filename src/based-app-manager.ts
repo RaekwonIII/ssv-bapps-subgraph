@@ -1,4 +1,4 @@
-import { BigDecimal, BigInt, Bytes, log } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import {
   BAppMetadataURIUpdated as BAppMetadataURIUpdatedEvent,
   BAppOptedInByStrategy as BAppOptedInByStrategyEvent,
@@ -56,13 +56,19 @@ import {
 } from "../generated/schema";
 
 export function handleInitialize(call: InitializeCall): void {
-  let implementationContract = call.from;
+  
+  let proxyContract = call.from
+  if (!proxyContract.toHexString().toLowerCase().includes("0x9b3345f3b1ce2d8655fc4b6e2ed39322d52aa317") && !proxyContract.toHexString().toLowerCase().includes("0x9a09a49870353867b0ce9901b44e84c32b2a47ac"))
+  {
+    log.error(`Caller is ${proxyContract.toHexString()}, but we only expect 0x9b3345f3b1ce2d8655fc4b6e2ed39322d52aa317 or 0x9a09a49870353867b0ce9901b44e84c32b2a47ac`,[])
+    return
+  }
 
   log.info(
-    `New contract Initialized, Bapp Constant values stored with ID ${implementationContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
+    `New contract Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
     []
   );
-  let bAppConstants = new BAppConstants(implementationContract);
+  let bAppConstants = new BAppConstants(proxyContract);
   bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
 
   bAppConstants.totalAccounts = BigInt.zero()
