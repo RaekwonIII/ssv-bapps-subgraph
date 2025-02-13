@@ -61,10 +61,10 @@ export function handleInitialize(call: InitializeCall): void {
     !proxyContract
       .toHexString()
       .toLowerCase()
-      .includes("0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A")
+      .includes("0x1bd6ceb98daf7ffeb590236b720f81b65213836a")
   ) {
     log.error(
-      `Caller is ${proxyContract.toHexString()}, but we only expect 0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A`,
+      `Caller is ${proxyContract.toHexString()}, but we only expect 0x1bd6ceb98daf7ffeb590236b720f81b65213836a`,
       []
     );
     return;
