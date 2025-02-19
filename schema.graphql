@@ -17,6 +17,7 @@ type BAppToken @entity(immutable: false) {
 type Strategy @entity(immutable: false) {
   id: String! # uint256
   strategyId: BigInt! # uint256
+  metadataURI: String
   owner: Account! # address
   fee: BigInt! # uint256
   feeProposed: BigInt! # uint256
@@ -71,6 +72,7 @@ type Account @entity(immutable: false) {
   operators: [Operator!] @derivedFrom(field: "owner")
   feeRecipient: Bytes! #address
   # BApp stuff 😎
+  metadataURI: String
   bApps: [BApp!]! @derivedFrom(field: "owner")
   strategies: [Strategy!]! @derivedFrom(field: "owner")
   totalDelegatedPercentage: BigInt! # uint256
@@ -240,6 +242,7 @@ type StrategyCreated @entity(immutable: true) {
   strategyId: BigInt! # uint256
   owner: Bytes! # address
   fee: BigInt! # uint32
+  metadataURI: String!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -301,6 +304,24 @@ type StrategyWithdrawalProposed @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+type StrategyMetadataURIUpdated @entity(immutable: true) {
+  id: Bytes!
+  strategyId: BigInt! # uint32
+  metadataURI: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AccountMetadataURIUpdated @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  metadataURI: String!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
 type Upgraded @entity(immutable: true) {
   id: Bytes!
   implementation: Bytes! # address
@@ -308,6 +329,7 @@ type Upgraded @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+
 type Cluster @entity(immutable: false) {
   id: String! # concat owner + operatorIds ?
   owner: Account! # address

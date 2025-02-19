@@ -112,25 +112,6 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "account",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
-      }
-    ],
-    "name": "AccountMetadataURIUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
         "name": "bAppAddress",
         "type": "address"
       },
@@ -149,9 +130,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -368,9 +349,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -386,9 +367,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "percentage",
-        "type": "uint32"
+        "type": "uint256"
       }
     ],
     "name": "ObligationCreated",
@@ -399,9 +380,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -430,9 +411,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -448,9 +429,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "percentage",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -486,9 +467,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -501,12 +482,6 @@
         "internalType": "uint32",
         "name": "fee",
         "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
       }
     ],
     "name": "StrategyCreated",
@@ -517,9 +492,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -548,9 +523,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -579,9 +554,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": false,
@@ -610,28 +585,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "metadataURI",
-        "type": "string"
-      }
-    ],
-    "name": "StrategyMetadataURIUpdated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint32",
-        "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -666,9 +622,9 @@
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint32",
+        "internalType": "uint256",
         "name": "strategyId",
-        "type": "uint32"
+        "type": "uint256"
       },
       {
         "indexed": true,
@@ -715,14 +671,14 @@
   {
     "inputs": [],
     "name": "FEE_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "FEE_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -736,14 +692,14 @@
   {
     "inputs": [],
     "name": "OBLIGATION_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "OBLIGATION_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -757,14 +713,14 @@
   {
     "inputs": [],
     "name": "WITHDRAWAL_EXPIRE_TIME",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "WITHDRAWAL_TIMELOCK_PERIOD",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -775,7 +731,7 @@
     ],
     "name": "accountBAppStrategy",
     "outputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -821,7 +777,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" },
       {
@@ -836,13 +792,10 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "uint32", "name": "fee", "type": "uint32" },
-      { "internalType": "string", "name": "metadataURI", "type": "string" }
-    ],
+    "inputs": [{ "internalType": "uint32", "name": "fee", "type": "uint32" }],
     "name": "createStrategy",
     "outputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -871,7 +824,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "contract IERC20", "name": "token", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
@@ -882,7 +835,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "name": "depositETH",
     "outputs": [],
@@ -891,7 +844,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" },
       {
@@ -907,7 +860,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "contract IERC20", "name": "token", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
@@ -918,7 +871,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "fastWithdrawETH",
@@ -928,7 +881,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "name": "finalizeFeeUpdate",
     "outputs": [],
@@ -937,7 +890,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" }
     ],
@@ -948,7 +901,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "contract IERC20", "name": "token", "type": "address" }
     ],
     "name": "finalizeWithdrawal",
@@ -958,7 +911,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "name": "finalizeWithdrawalETH",
     "outputs": [],
@@ -984,21 +937,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "token", "type": "address" },
       { "internalType": "address", "name": "bApp", "type": "address" }
     ],
     "name": "obligationRequests",
     "outputs": [
       { "internalType": "uint32", "name": "percentage", "type": "uint32" },
-      { "internalType": "uint32", "name": "requestTime", "type": "uint32" }
+      { "internalType": "uint64", "name": "requestTime", "type": "uint64" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" }
     ],
@@ -1012,7 +965,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address[]", "name": "tokens", "type": "address[]" },
       {
@@ -1036,7 +989,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "uint32", "name": "proposedFee", "type": "uint32" }
     ],
     "name": "proposeFeeUpdate",
@@ -1046,7 +999,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" },
       {
@@ -1062,7 +1015,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "token", "type": "address" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
@@ -1073,7 +1026,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "uint256", "name": "amount", "type": "uint256" }
     ],
     "name": "proposeWithdrawalETH",
@@ -1122,21 +1075,21 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" }
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" }
     ],
     "name": "strategies",
     "outputs": [
       { "internalType": "address", "name": "owner", "type": "address" },
       { "internalType": "uint32", "name": "fee", "type": "uint32" },
       { "internalType": "uint32", "name": "feeProposed", "type": "uint32" },
-      { "internalType": "uint32", "name": "feeRequestTime", "type": "uint32" }
+      { "internalType": "uint64", "name": "feeRequestTime", "type": "uint64" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "account", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" }
     ],
@@ -1169,25 +1122,6 @@
   },
   {
     "inputs": [
-      { "internalType": "string", "name": "metadataURI", "type": "string" }
-    ],
-    "name": "updateAccountMetadataURI",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "bApp", "type": "address" },
-      { "internalType": "string", "name": "metadataURI", "type": "string" }
-    ],
-    "name": "updateBAppMetadataURI",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address[]", "name": "tokens", "type": "address[]" },
       {
@@ -1213,10 +1147,10 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "string", "name": "metadataURI", "type": "string" }
     ],
-    "name": "updateStrategyMetadataURI",
+    "name": "updateMetadataURI",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1237,7 +1171,7 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "token", "type": "address" }
     ],
     "name": "usedTokens",
@@ -1249,14 +1183,14 @@
   },
   {
     "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
+      { "internalType": "uint256", "name": "strategyId", "type": "uint256" },
       { "internalType": "address", "name": "account", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" }
     ],
     "name": "withdrawalRequests",
     "outputs": [
       { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "uint32", "name": "requestTime", "type": "uint32" }
+      { "internalType": "uint64", "name": "requestTime", "type": "uint64" }
     ],
     "stateMutability": "view",
     "type": "function"
