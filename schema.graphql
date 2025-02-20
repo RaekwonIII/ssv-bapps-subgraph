@@ -242,7 +242,7 @@ type StrategyCreated @entity(immutable: true) {
   strategyId: BigInt! # uint256
   owner: Bytes! # address
   fee: BigInt! # uint32
-  metadataURI: String!
+  metadataURI: String
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

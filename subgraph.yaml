@@ -29,7 +29,7 @@ dataSources:
     network: holesky
     source:
       abi: BasedAppManager
-      address: "0x9a09a49870353867b0ce9901b44e84c32b2a47ac"
+      address: "0xF1470baE672075C8A2824f084E28e2a4B8fDb223"
       startBlock: 3276191
     mapping:
       kind: ethereum/events
@@ -49,8 +49,8 @@ dataSources:
     network: holesky
     source:
       abi: BasedAppManager
-      address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
-      startBlock: 3276191
+      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
+      startBlock: 3250994
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -133,7 +133,7 @@ dataSources:
     network: holesky
     source:
       abi: BasedAppManagerLegacy
-      address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
+      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
       startBlock: 3276191
     mapping:
       kind: ethereum/events
@@ -183,8 +183,8 @@ dataSources:
     network: holesky
     source:
       abi: SSVNetwork
-      address: "0x38A4794cCEd47d3baf7370CcC43B560D3a1beEFA"
-      startBlock: 181612
+      address: "0x0d33801785340072C452b994496B19f196b7eE15"
+      startBlock: 84599
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
