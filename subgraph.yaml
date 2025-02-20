@@ -5,38 +5,18 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: SSVNetworkImpl
-    network: holesky
-    source:
-      abi: SSVNetwork
-      address: "0x116522F4D00b42Efce0aA77f7ddAd1d27705F36b"
-      startBlock: 84598
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - DAOValues
-      abis:
-        - name: SSVNetwork
-          file: ./abis/SSVNetwork.json
-      callHandlers:
-        - function: initialize(address,address,address,address,address,uint64,uint256,uint32,uint64,uint64,uint64)
-          handler: handleInitialize
-      file: ./src/ssv-network.ts
-  - kind: ethereum
     name: BasedAppManagerImpl
     network: holesky
     source:
       abi: BasedAppManager
       address: "0xF1470baE672075C8A2824f084E28e2a4B8fDb223"
-      startBlock: 3384861
+      startBlock: 3384860
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - DAOValues
+        - BAppConstants
       abis:
         - name: BasedAppManager
           file: ./abis/BasedAppManager.json
@@ -50,7 +30,7 @@ dataSources:
     source:
       abi: BasedAppManager
       address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
-      startBlock: 3276191
+      startBlock: 3276190
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -133,14 +113,14 @@ dataSources:
     network: holesky
     source:
       abi: BasedAppManagerLegacy
-      address: "0x590C093AbF6489289741E8aC119d1c91b06500C5"
-      startBlock: 3272034
+      address: "0x9a09a49870353867b0ce9901b44e84c32b2a47ac"
+      startBlock: 3276190
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - DAOValues
+        - BAppConstants
       abis:
         - name: BasedAppManagerLegacy
           file: ./abis/BasedAppManagerLegacy.json
@@ -154,7 +134,7 @@ dataSources:
     source:
       abi: BasedAppManagerLegacy
       address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
-      startBlock: 3276191
+      startBlock: 3276190
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -198,6 +178,26 @@ dataSources:
             address,address,uint256)
           handler: handleStrategyWithdrawalProposed
       file: ./src/based-app-manager-legacy.ts
+  - kind: ethereum
+    name: SSVNetworkImpl
+    network: holesky
+    source:
+      abi: SSVNetwork
+      address: "0x116522F4D00b42Efce0aA77f7ddAd1d27705F36b"
+      startBlock: 84598
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DAOValues
+      abis:
+        - name: SSVNetwork
+          file: ./abis/SSVNetwork.json
+      callHandlers:
+        - function: initialize(address,address,address,address,address,uint64,uint256,uint32,uint64,uint64,uint64)
+          handler: handleInitialize
+      file: ./src/ssv-network.ts
   - kind: ethereum
     name: SSVNetwork
     network: holesky
