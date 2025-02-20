@@ -30,7 +30,7 @@ dataSources:
     source:
       abi: BasedAppManager
       address: "0xF1470baE672075C8A2824f084E28e2a4B8fDb223"
-      startBlock: 3276191
+      startBlock: 3384861
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -49,8 +49,8 @@ dataSources:
     network: holesky
     source:
       abi: BasedAppManager
-      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
-      startBlock: 3250994
+      address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
+      startBlock: 3276191
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -129,11 +129,31 @@ dataSources:
           handler: handlStrategyMetadataURIUpdated
       file: ./src/based-app-manager.ts
   - kind: ethereum
+    name: BasedAppManagerImplLegacy
+    network: holesky
+    source:
+      abi: BasedAppManagerLegacy
+      address: "0x590C093AbF6489289741E8aC119d1c91b06500C5"
+      startBlock: 3272034
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DAOValues
+      abis:
+        - name: BasedAppManagerLegacy
+          file: ./abis/BasedAppManagerLegacy.json
+      callHandlers:
+        - function: initialize(address,uint32)
+          handler: handleInitialize
+      file: ./src/based-app-manager-legacy.ts
+  - kind: ethereum
     name: BasedAppManagerLegacy
     network: holesky
     source:
       abi: BasedAppManagerLegacy
-      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
+      address: "0x1Bd6ceB98Daf7FfEB590236b720F81b65213836A"
       startBlock: 3276191
     mapping:
       kind: ethereum/events
@@ -183,8 +203,8 @@ dataSources:
     network: holesky
     source:
       abi: SSVNetwork
-      address: "0x0d33801785340072C452b994496B19f196b7eE15"
-      startBlock: 84599
+      address: "0x38A4794cCEd47d3baf7370CcC43B560D3a1beEFA"
+      startBlock: 181612
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

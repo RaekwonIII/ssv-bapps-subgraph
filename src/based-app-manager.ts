@@ -75,15 +75,25 @@ export function handleInitialize(call: InitializeCall): void {
   }
 
   log.info(
-    `New contract Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
+    `New contract ${call.to.toHexString()} Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} Updating maxFeeIncrement constant`,
     []
   );
-  let bAppConstants = new BAppConstants(proxyContract);
-  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
 
-  bAppConstants.totalAccounts = BigInt.zero();
-  bAppConstants.totalBApps = BigInt.zero();
-  bAppConstants.totalStrategies = BigInt.zero();
+  let bAppConstants = BAppConstants.load(proxyContract);
+  if (!bAppConstants) {
+
+    log.warning(
+      `Contract ${call.to.toHexString()} is a new implementation, but the Bapp Constant values with ID ${proxyContract.toHexString()} does not exist on the database, creating it`,
+      []
+    );
+
+    bAppConstants = new BAppConstants(proxyContract);
+    bAppConstants.totalAccounts = BigInt.zero();
+    bAppConstants.totalBApps = BigInt.zero();
+    bAppConstants.totalStrategies = BigInt.zero();
+  }
+
+  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
 
   bAppConstants.save();
 }

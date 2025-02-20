@@ -1,6 +1,7 @@
 import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import {
   BAppOptedInByStrategy as BAppOptedInByStrategyEventLegacy,
+  InitializeCall,
   ObligationCreated as ObligationCreatedEventLegacy,
   ObligationUpdateProposed as ObligationUpdateProposedEventLegacy,
   ObligationUpdated as ObligationUpdatedEventLegacy,
@@ -31,6 +32,35 @@ import {
   StrategyWithdrawalProposed,
   StrategyTokenBalance,
 } from "../generated/schema";
+
+export function handleInitialize(call: InitializeCall): void {
+  let proxyContract = call.from;
+  if (
+    !proxyContract
+      .toHexString()
+      .toLowerCase()
+      .includes("0x1bd6ceb98daf7ffeb590236b720f81b65213836a")
+  ) {
+    log.error(
+      `Caller is ${proxyContract.toHexString()}, but we only expect 0x1bd6ceb98daf7ffeb590236b720f81b65213836a`,
+      []
+    );
+    return;
+  }
+
+  log.info(
+    `New contract Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`,
+    []
+  );
+  let bAppConstants = new BAppConstants(proxyContract);
+  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
+
+  bAppConstants.totalAccounts = BigInt.zero();
+  bAppConstants.totalBApps = BigInt.zero();
+  bAppConstants.totalStrategies = BigInt.zero();
+
+  bAppConstants.save();
+}
 
 export function handleBAppOptedInByStrategy(
   event: BAppOptedInByStrategyEventLegacy
