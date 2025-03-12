@@ -96,9 +96,21 @@
     }
   },
   "mainnet": {
+    "BasedAppManagerLegacy": {
+      "address": "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317",
+      "startBlock": 3272034
+    },
     "BasedAppManager": {
-      "address": "0xa8D6b028c6A48eCaf5558358A17824D1493D5B0a",
-      "startBlock": 3250994
+      "address": "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317",
+      "startBlock": 3272034
+    },
+    "BasedAppManagerImplLegacy": {
+      "address": "0x590C093AbF6489289741E8aC119d1c91b06500C5",
+      "startBlock": 3272034
+    },
+    "BasedAppManagerImpl": {
+      "address": "0xF1470baE672075C8A2824f084E28e2a4B8fDb223",
+      "startBlock": 3384861
     },
     "SSVNetwork": {
       "address": "0xDD9BC35aE942eF0cFa76930954a156B3fF30a4E1",

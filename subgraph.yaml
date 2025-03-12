@@ -5,32 +5,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: BasedAppManagerImpl
-    network: devnet7
-    source:
-      abi: BasedAppManager
-      address: "0xEd3afBc0af3B010815dd242f1aA20d493Ae3160d"
-      startBlock: 100
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - BAppConstants
-      abis:
-        - name: BasedAppManager
-          file: ./abis/BasedAppManager.json
-      callHandlers:
-        - function: initialize(address,uint32)
-          handler: handleInitialize
-      file: ./src/based-app-manager.ts
-  - kind: ethereum
     name: BasedAppManager
     network: devnet7
     source:
       abi: BasedAppManager
       address: "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5"
-      startBlock: 100
+      startBlock: 9273
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -109,32 +89,12 @@ dataSources:
           handler: handlStrategyMetadataURIUpdated
       file: ./src/based-app-manager.ts
   - kind: ethereum
-    name: SSVNetworkImpl
-    network: devnet7
-    source:
-      abi: SSVNetwork
-      address: "0x3Ff93881fE506f3FDDBA66FC362D602C7553F015"
-      startBlock: 100
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - DAOValues
-      abis:
-        - name: SSVNetwork
-          file: ./abis/SSVNetwork.json
-      callHandlers:
-        - function: initialize(address,address,address,address,address,uint64,uint256,uint32,uint64,uint64,uint64)
-          handler: handleInitialize
-      file: ./src/ssv-network.ts
-  - kind: ethereum
     name: SSVNetwork
     network: devnet7
     source:
       abi: SSVNetwork
       address: "0xad45A78180961079BFaeEe349704F411dfF947C6"
-      startBlock: 100
+      startBlock: 10070
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

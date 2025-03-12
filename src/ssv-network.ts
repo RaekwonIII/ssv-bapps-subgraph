@@ -1,4 +1,4 @@
-import { Address, BigInt, Bytes, arweave } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes, arweave, bigInt } from "@graphprotocol/graph-ts"
 import {
   ClusterDeposited as ClusterDepositedEvent,
   ClusterLiquidated as ClusterLiquidatedEvent,
@@ -63,42 +63,42 @@ import {
 } from "../generated/schema"
 import { log } from "matchstick-as"
 
-export function handleInitialize(
-  call: InitializeCall
-): void {
-  if (!call.from.toHexString().toLowerCase().includes("0x38a4794cced47d3baf7370ccc43b560d3a1beefa") && !call.from.toHexString().toLowerCase().includes("0xdd9bc35ae942ef0cFa76930954a156b3ff30a4e1"))
-  {
-    log.error(`Caller is ${call.from.toHexString()}, but we only expect 0x38a4794cced47d3baf7370ccc43b560d3a1beefa`,[])
-    return
-  }
+// export function handleInitialize(
+//   call: InitializeCall
+// ): void {
+//   if (!call.from.toHexString().toLowerCase().includes("0x38a4794cced47d3baf7370ccc43b560d3a1beefa") && !call.from.toHexString().toLowerCase().includes("0xdd9bc35ae942ef0cFa76930954a156b3ff30a4e1"))
+//   {
+//     log.error(`Caller is ${call.from.toHexString()}, but we only expect 0x38a4794cced47d3baf7370ccc43b560d3a1beefa`,[])
+//     return
+//   }
 
-  let daoValuesAddress = call.from
-  log.error(`New contract Initialized, DAO values store with ID ${daoValuesAddress.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`, [])
-  let dao = new DAOValues(daoValuesAddress)
-  dao.updateType = "INITIALIZATION"
-  dao.networkFee = BigInt.zero()
-  dao.networkFeeIndex = BigInt.zero()
-  dao.networkFeeIndexBlockNumber = BigInt.zero()
-  dao.liquidationThreshold = call.inputs.minimumBlocksBeforeLiquidation_
-  dao.minimumLiquidationCollateral = call.inputs.minimumLiquidationCollateral_
-  dao.operatorFeeIncreaseLimit = call.inputs.operatorMaxFeeIncrease_
-  dao.declareOperatorFeePeriod = call.inputs.declareOperatorFeePeriod_
-  dao.executeOperatorFeePeriod = call.inputs.executeOperatorFeePeriod_
-  dao.validatorsPerOperatorLimit = call.inputs.validatorsPerOperatorLimit_
-  dao.totalAccounts = BigInt.zero()
-  dao.totalOperators = BigInt.zero()
-  dao.totalValidators = BigInt.zero()
-  dao.validatorsAdded = BigInt.zero()
-  dao.validatorsRemoved = BigInt.zero()
-  dao.operatorsAdded = BigInt.zero()
-  dao.operatorsRemoved = BigInt.zero()
-  dao.operatorMaximumFee = BigInt.zero()
-  dao.lastUpdateBlockNumber = call.block.number
-  dao.lastUpdateBlockTimestamp = call.block.timestamp
-  dao.lastUpdateTransactionHash = call.transaction.hash
+//   let daoValuesAddress = call.from
+//   log.error(`New contract Initialized, DAO values store with ID ${daoValuesAddress.toHexString()} does not exist on the database, creating it. Update type: INITIALIZATION`, [])
+//   let dao = new DAOValues(daoValuesAddress)
+//   dao.updateType = "INITIALIZATION"
+//   dao.networkFee = BigInt.zero()
+//   dao.networkFeeIndex = BigInt.zero()
+//   dao.networkFeeIndexBlockNumber = BigInt.zero()
+//   dao.liquidationThreshold = call.inputs.minimumBlocksBeforeLiquidation_
+//   dao.minimumLiquidationCollateral = call.inputs.minimumLiquidationCollateral_
+//   dao.operatorFeeIncreaseLimit = call.inputs.operatorMaxFeeIncrease_
+//   dao.declareOperatorFeePeriod = call.inputs.declareOperatorFeePeriod_
+//   dao.executeOperatorFeePeriod = call.inputs.executeOperatorFeePeriod_
+//   dao.validatorsPerOperatorLimit = call.inputs.validatorsPerOperatorLimit_
+//   dao.totalAccounts = BigInt.zero()
+//   dao.totalOperators = BigInt.zero()
+//   dao.totalValidators = BigInt.zero()
+//   dao.validatorsAdded = BigInt.zero()
+//   dao.validatorsRemoved = BigInt.zero()
+//   dao.operatorsAdded = BigInt.zero()
+//   dao.operatorsRemoved = BigInt.zero()
+//   dao.operatorMaximumFee = BigInt.zero()
+//   dao.lastUpdateBlockNumber = call.block.number
+//   dao.lastUpdateBlockTimestamp = call.block.timestamp
+//   dao.lastUpdateTransactionHash = call.transaction.hash
 
-  dao.save()
-}
+//   dao.save()
+// }
 
 // ###### DAO Events ######
 
@@ -120,6 +120,12 @@ export function handleDeclareOperatorFeePeriodUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -164,6 +170,12 @@ export function handleExecuteOperatorFeePeriodUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: EXECUTE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -237,6 +249,12 @@ export function handleLiquidationThresholdPeriodUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: LIQUIDATION_THRESHOLD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -281,6 +299,12 @@ export function handleMinimumLiquidationCollateralUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: MIN_LIQUIDATION_COLLATERAL`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -340,6 +364,12 @@ export function handleNetworkFeeUpdated(event: NetworkFeeUpdatedEvent): void {
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: NETWORK_FEE`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -387,6 +417,12 @@ export function handleOperatorFeeIncreaseLimitUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: OPERATOR_FEE_INCREASE_LIMIT`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -431,6 +467,12 @@ export function handleOperatorMaximumFeeUpdated(
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.networkFee = BigInt.zero()
     dao.networkFeeIndex = BigInt.zero()
     dao.networkFeeIndexBlockNumber = BigInt.zero()
@@ -716,6 +758,12 @@ export function handleValidatorAdded(event: ValidatorAddedEvent): void {
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.updateType = "VALIDATOR_ADDED"
 
     dao.networkFee = BigInt.zero()
@@ -840,6 +888,12 @@ export function handleValidatorRemoved(event: ValidatorRemovedEvent): void {
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.updateType = "VALIDATOR_REMOVED"
 
     dao.networkFee = BigInt.zero()
@@ -964,6 +1018,12 @@ export function handleOperatorAdded(event: OperatorAddedEvent): void {
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.updateType = "OPERATOR_ADDED"
 
     dao.networkFee = BigInt.zero()
@@ -1187,6 +1247,12 @@ export function handleOperatorRemoved(event: OperatorRemovedEvent): void {
   if (!dao) {
     log.error(`New DAO Event, DAO values store with ID ${event.address.toHexString()} does not exist on the database, creating it. Update type: DECLARE_OPERATOR_FEE_PERIOD`, [])
     dao = new DAOValues(event.address)
+    dao.liquidationThreshold = BigInt.fromI32(214800)
+    dao.minimumLiquidationCollateral = BigInt.fromI64(1000000000000000000)
+    dao.operatorFeeIncreaseLimit = BigInt.fromI32(1000)
+    dao.declareOperatorFeePeriod = BigInt.fromI32(604800)
+    dao.executeOperatorFeePeriod = BigInt.fromI32(60480)
+    dao.validatorsPerOperatorLimit = BigInt.fromI32(560)
     dao.updateType = "OPERATOR_REMOVED"
 
     dao.networkFee = BigInt.zero()
