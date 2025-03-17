@@ -59,44 +59,44 @@ import {
   StrategyTokenBalance,
 } from "../generated/schema";
 
-export function handleInitialize(call: InitializeCall): void {
-  let proxyContract = call.from;
-  if (
-    !proxyContract
-      .toHexString()
-      .toLowerCase()
-      .includes("0x1bd6ceb98daf7ffeb590236b720f81b65213836a")
-  ) {
-    log.error(
-      `Caller is ${proxyContract.toHexString()}, but we only expect 0x1bd6ceb98daf7ffeb590236b720f81b65213836a`,
-      []
-    );
-    return;
-  }
+// export function handleInitialize(call: InitializeCall): void {
+//   let proxyContract = call.from;
+//   if (
+//     !proxyContract
+//       .toHexString()
+//       .toLowerCase()
+//       .includes("0x1bd6ceb98daf7ffeb590236b720f81b65213836a")
+//   ) {
+//     log.error(
+//       `Caller is ${proxyContract.toHexString()}, but we only expect 0x1bd6ceb98daf7ffeb590236b720f81b65213836a`,
+//       []
+//     );
+//     return;
+//   }
 
-  log.info(
-    `New contract ${call.to.toHexString()} Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} Updating maxFeeIncrement constant`,
-    []
-  );
+//   log.info(
+//     `New contract ${call.to.toHexString()} Initialized, Bapp Constant values stored with ID ${proxyContract.toHexString()} Updating maxFeeIncrement constant`,
+//     []
+//   );
 
-  let bAppConstants = BAppConstants.load(proxyContract);
-  if (!bAppConstants) {
+//   let bAppConstants = BAppConstants.load(proxyContract);
+//   if (!bAppConstants) {
 
-    log.warning(
-      `Contract ${call.to.toHexString()} is a new implementation, but the Bapp Constant values with ID ${proxyContract.toHexString()} does not exist on the database, creating it`,
-      []
-    );
+//     log.warning(
+//       `Contract ${call.to.toHexString()} is a new implementation, but the Bapp Constant values with ID ${proxyContract.toHexString()} does not exist on the database, creating it`,
+//       []
+//     );
 
-    bAppConstants = new BAppConstants(proxyContract);
-    bAppConstants.totalAccounts = BigInt.zero();
-    bAppConstants.totalBApps = BigInt.zero();
-    bAppConstants.totalStrategies = BigInt.zero();
-  }
+//     bAppConstants = new BAppConstants(proxyContract);
+//     bAppConstants.totalAccounts = BigInt.zero();
+//     bAppConstants.totalBApps = BigInt.zero();
+//     bAppConstants.totalStrategies = BigInt.zero();
+//   }
 
-  bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
+//   bAppConstants._maxFeeIncrement = call.inputs._maxFeeIncrement;
 
-  bAppConstants.save();
-}
+//   bAppConstants.save();
+// }
 
 export function handleBAppMetadataURIUpdated(
   event: BAppMetadataURIUpdatedEvent
@@ -237,8 +237,12 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );
-    return;
+    );  
+    bAppConstants = new BAppConstants(event.address);
+    bAppConstants.totalAccounts = BigInt.zero();
+    bAppConstants.totalBApps = BigInt.zero();
+    bAppConstants.totalStrategies = BigInt.zero();
+    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
@@ -370,8 +374,12 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );
-    return;
+    );  
+    bAppConstants = new BAppConstants(event.address);
+    bAppConstants.totalAccounts = BigInt.zero();
+    bAppConstants.totalBApps = BigInt.zero();
+    bAppConstants.totalStrategies = BigInt.zero();
+    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
@@ -790,8 +798,12 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );
-    return;
+    );  
+    bAppConstants = new BAppConstants(event.address);
+    bAppConstants.totalAccounts = BigInt.zero();
+    bAppConstants.totalBApps = BigInt.zero();
+    bAppConstants.totalStrategies = BigInt.zero();
+    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
@@ -838,8 +850,12 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );
-    return;
+    );  
+    bAppConstants = new BAppConstants(event.address);
+    bAppConstants.totalAccounts = BigInt.zero();
+    bAppConstants.totalBApps = BigInt.zero();
+    bAppConstants.totalStrategies = BigInt.zero();
+    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
