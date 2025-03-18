@@ -1,6 +1,5 @@
 type BApp @entity(immutable: false) {
   id: Bytes! # address
-  owner: Account! # address
   bAppTokens: [BAppToken!]! @derivedFrom(field: "bApp")
   metadataURI: String
   strategies: [StrategyBAppOptIn!]! @derivedFrom(field: "bApp")
@@ -11,6 +10,7 @@ type BAppToken @entity(immutable: false) {
   bApp: BApp!
   token: Bytes!
   sharedRiskLevel: BigInt!
+  sharedRiskLevelProposed: BigInt!
   totalObligatedBalance: BigInt!
 }
 
@@ -73,7 +73,6 @@ type Account @entity(immutable: false) {
   feeRecipient: Bytes! #address
   # BApp stuff 😎
   metadataURI: String
-  bApps: [BApp!]! @derivedFrom(field: "owner")
   strategies: [Strategy!]! @derivedFrom(field: "owner")
   totalDelegatedPercentage: BigInt! # uint256
   delegators: [Delegation!]! @derivedFrom(field: "receiver")
@@ -120,7 +119,6 @@ type BAppOptedInByStrategy @entity(immutable: true) {
 type BAppRegistered @entity(immutable: true) {
   id: Bytes!
   bAppAddress: Bytes! # address
-  owner: Bytes! # address
   tokens: [Bytes!]! # address[]
   sharedRiskLevel: [BigInt!]! # uint32[]
   metadataURI: String! # string
@@ -130,6 +128,34 @@ type BAppRegistered @entity(immutable: true) {
 }
 
 type BAppTokensCreated @entity(immutable: true) {
+  id: Bytes!
+  bAppAddress: Bytes! # address
+  tokens: [Bytes!]! # address[]
+  sharedRiskLevels: [BigInt!]! # uint32[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BAppTokensRemovalProposed @entity(immutable: true) {
+  id: Bytes!
+  bAppAddress: Bytes! # address
+  tokens: [Bytes!]! # address[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BAppTokensRemoved @entity(immutable: true) {
+  id: Bytes!
+  bAppAddress: Bytes! # address
+  tokens: [Bytes!]! # address[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BAppTokensUpdateProposed @entity(immutable: true) {
   id: Bytes!
   bAppAddress: Bytes! # address
   tokens: [Bytes!]! # address[]
@@ -264,7 +290,6 @@ type StrategyFeeUpdateProposed @entity(immutable: true) {
   strategyId: BigInt! # uint256
   owner: Bytes! # address
   proposedFee: BigInt! # uint32
-  fee: BigInt! # uint32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -275,7 +300,6 @@ type StrategyFeeUpdated @entity(immutable: true) {
   strategyId: BigInt! # uint256
   owner: Bytes! # address
   fee: BigInt! # uint32
-  oldFee: BigInt! # uint32
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

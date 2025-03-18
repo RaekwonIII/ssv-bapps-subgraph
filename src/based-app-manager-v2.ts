@@ -1,17 +1,15 @@
-import { BigInt, Bytes, log, store } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, log } from "@graphprotocol/graph-ts";
 import {
   AccountMetadataURIUpdated as AccountMetadataURIUpdatedEvent,
   BAppMetadataURIUpdated as BAppMetadataURIUpdatedEvent,
   BAppOptedInByStrategy as BAppOptedInByStrategyEvent,
   BAppRegistered as BAppRegisteredEvent,
   BAppTokensCreated as BAppTokensCreatedEvent,
-  BAppTokensRemovalProposed as BAppTokensRemovalProposedEvent,
-  BAppTokensRemoved as BAppTokensRemovedEvent,
-  BAppTokensUpdateProposed as BAppTokensUpdateProposedEvent,
   BAppTokensUpdated as BAppTokensUpdatedEvent,
   DelegationCreated as DelegationCreatedEvent,
   DelegationRemoved as DelegationRemovedEvent,
   DelegationUpdated as DelegationUpdatedEvent,
+  InitializeCall,
   Initialized as InitializedEvent,
   MaxFeeIncrementSet as MaxFeeIncrementSetEvent,
   ObligationCreated as ObligationCreatedEvent,
@@ -35,9 +33,6 @@ import {
   BAppOptedInByStrategy,
   BAppRegistered,
   BAppTokensCreated,
-  BAppTokensRemovalProposed,
-  BAppTokensRemoved,
-  BAppTokensUpdateProposed,
   BAppTokensUpdated,
   Delegation,
   DelegationCreated,
@@ -179,6 +174,7 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   );
   entity.bAppAddress = event.params.bAppAddress;
+  entity.owner = event.params.owner;
   entity.tokens = changetype<Bytes[]>(event.params.tokens);
   entity.sharedRiskLevel = event.params.sharedRiskLevel;
   entity.metadataURI = event.params.metadataURI;
@@ -188,6 +184,22 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
   entity.transactionHash = event.transaction.hash;
 
   entity.save();
+
+  let newAccountsCount = 0;
+  let owner = Account.load(event.params.owner);
+  if (!owner) {
+    log.info(
+      `Trying to create new BApp but owner account ${event.params.owner.toHexString()} does not exist, creating it`,
+      []
+    );
+    owner = new Account(event.params.owner);
+    owner.nonce = BigInt.zero();
+    owner.validatorCount = BigInt.zero();
+    owner.feeRecipient = event.params.owner;
+    owner.totalDelegatedPercentage = BigInt.zero();
+    newAccountsCount += 1;
+  }
+  owner.save();
 
   let bApp = BApp.load(event.params.bAppAddress);
   if (!bApp) {
@@ -199,6 +211,7 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
   }
 
   bApp.metadataURI = event.params.metadataURI;
+  bApp.owner = event.params.owner;
   for (var i = 0; i < event.params.tokens.length; i++) {
     let token = event.params.tokens[i];
     let sharedRiskLevelValue = event.params.sharedRiskLevel[i];
@@ -211,7 +224,6 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
       );
       bAppToken = new BAppToken(sharedRiskLevelId);
       bAppToken.totalObligatedBalance = BigInt.zero();
-      bAppToken.sharedRiskLevelProposed = BigInt.zero();
     }
     bAppToken.token = token;
     bAppToken.sharedRiskLevel = sharedRiskLevelValue;
@@ -232,6 +244,9 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     bAppConstants.totalStrategies = BigInt.zero();
     bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
+  bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
+    BigInt.fromI32(newAccountsCount)
+  );
   bAppConstants.totalBApps = bAppConstants.totalBApps.plus(BigInt.fromI32(1));
   bAppConstants.save();
 }
@@ -264,83 +279,11 @@ export function handleBAppTokensCreated(event: BAppTokensCreatedEvent): void {
       );
       bAppToken = new BAppToken(sharedRiskLevelId);
       bAppToken.totalObligatedBalance = BigInt.zero();
-      bAppToken.sharedRiskLevelProposed = BigInt.zero();
     }
     bAppToken.bApp = event.params.bAppAddress;
     bAppToken.token = token;
     bAppToken.sharedRiskLevel = sharedRiskLevelValue;
     bAppToken.save();
-  }
-}
-
-export function handleBAppTokensRemovalProposed(event: BAppTokensRemovalProposedEvent): void {
-  let entity = new BAppTokensRemovalProposed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.bAppAddress = event.params.bAppAddress;
-  entity.tokens = changetype<Bytes[]>(event.params.tokens);
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-}
-
-export function handleBAppTokensRemoved(event: BAppTokensRemovedEvent): void {
-  let entity = new BAppTokensRemoved(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.bAppAddress = event.params.bAppAddress;
-  entity.tokens = changetype<Bytes[]>(event.params.tokens);
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-
-  for (var i = 0; i < event.params.tokens.length; i++) {
-    let token = event.params.tokens[i];
-    let bappTokenId = event.params.bAppAddress
-      .toHexString()
-      .concat(token.toHexString());
-    // remove the representation of the token (and risk) for this bapp, no longer needed.
-    store.remove('BAppToken', bappTokenId)
-  }
-}
-
-export function handleBAppTokensUpdateProposed(event: BAppTokensUpdateProposedEvent): void {
-  let entity = new BAppTokensUpdateProposed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.bAppAddress = event.params.bAppAddress;
-  entity.tokens = changetype<Bytes[]>(event.params.tokens);
-  entity.sharedRiskLevels = event.params.sharedRiskLevels;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
-
-  for (var i = 0; i < event.params.tokens.length; i++) {
-    let token = event.params.tokens[i];
-    let sharedRiskLevelValue = event.params.sharedRiskLevels[i];
-    let bAppTokenId = event.params.bAppAddress
-      .toHexString()
-      .concat(token.toHexString());
-    let bAppToken = BAppToken.load(bAppTokenId);
-    if (!bAppToken) {
-      log.error(
-        `Trying to update BAppToken ${bAppTokenId} for BApp ${event.params.bAppAddress.toHexString()}, as token ${token.toHexString()} risk level has changed, but BAppToken does not exist and cannot be created`,
-        []
-      );
-    } else {
-      // only update the proposed value
-      bAppToken.sharedRiskLevelProposed = sharedRiskLevelValue;
-      bAppToken.save();
-    }
   }
 }
 
@@ -361,18 +304,19 @@ export function handleBAppTokensUpdated(event: BAppTokensUpdatedEvent): void {
   for (var i = 0; i < event.params.tokens.length; i++) {
     let token = event.params.tokens[i];
     let sharedRiskLevelValue = event.params.sharedRiskLevels[i];
-    let bAppTokenId = event.params.bAppAddress
+    let sharedRiskLevelId = event.params.bAppAddress
       .toHexString()
       .concat(token.toHexString());
-    let bAppToken = BAppToken.load(bAppTokenId);
-    if (!bAppToken) {
+    let sharedRiskLevel = BAppToken.load(sharedRiskLevelId);
+    if (!sharedRiskLevel) {
       log.error(
-        `Trying to update BAppToken ${bAppTokenId} for BApp ${event.params.bAppAddress.toHexString()}, as token ${token.toHexString()} risk level has changed, but BAppToken does not exist and cannot be created`,
+        `Trying to update BAppToken ${sharedRiskLevelId} for BApp ${event.params.bAppAddress.toHexString()}, as token ${token.toHexString()} risk level has changed, but BAppToken does not exist and cannot be created`,
         []
       );
     } else {
-      bAppToken.sharedRiskLevel = sharedRiskLevelValue;
-      bAppToken.save();
+      sharedRiskLevel.token = token;
+      sharedRiskLevel.sharedRiskLevel = sharedRiskLevelValue;
+      sharedRiskLevel.save();
     }
   }
 }
@@ -1034,6 +978,7 @@ export function handleStrategyFeeUpdateProposed(
   entity.strategyId = event.params.strategyId;
   entity.owner = event.params.owner;
   entity.proposedFee = event.params.proposedFee;
+  entity.fee = event.params.fee;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -1061,7 +1006,8 @@ export function handleStrategyFeeUpdated(event: StrategyFeeUpdatedEvent): void {
   );
   entity.strategyId = event.params.strategyId;
   entity.owner = event.params.owner;
-  entity.fee = event.params.newFee;
+  entity.fee = event.params.fee;
+  entity.oldFee = event.params.oldFee;
 
   entity.blockNumber = event.block.number;
   entity.blockTimestamp = event.block.timestamp;
@@ -1078,8 +1024,8 @@ export function handleStrategyFeeUpdated(event: StrategyFeeUpdatedEvent): void {
     );
     return;
   }
-  strategy.fee = event.params.newFee;
-  strategy.feeProposed = event.params.newFee;
+  strategy.fee = event.params.fee;
+  strategy.feeProposed = event.params.fee;
   strategy.feeProposedTimestamp = BigInt.zero();
   strategy.save();
 }

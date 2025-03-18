@@ -46,12 +46,18 @@ dataSources:
         - event: BAppOptedInByStrategy(indexed uint32,indexed
             address,bytes,address[],uint32[])
           handler: handleBAppOptedInByStrategy
-        - event: BAppRegistered(indexed address,indexed address,address[],uint32[],string)
+        - event: BAppRegistered(indexed address,address[],uint32[],string)
           handler: handleBAppRegistered
         - event: BAppTokensCreated(indexed address,address[],uint32[])
           handler: handleBAppTokensCreated
+        - event: BAppTokensUpdateProposed(indexed address,address[],uint32[])
+          handler: handleBAppTokensUpdateProposed
         - event: BAppTokensUpdated(indexed address,address[],uint32[])
           handler: handleBAppTokensUpdated
+        - event: BAppTokensRemovalProposed(indexed address,address[])
+          handler: handleBAppTokensRemovalProposed
+        - event: BAppTokensRemoved(indexed address,address[])
+          handler: handleBAppTokensRemoved
         - event: DelegationCreated(indexed address,indexed address,uint32)
           handler: handleDelegationCreated
         - event: DelegationRemoved(indexed address,indexed address)
@@ -74,9 +80,9 @@ dataSources:
           handler: handleStrategyCreated
         - event: StrategyDeposit(indexed uint32,indexed address,address,uint256)
           handler: handleStrategyDeposit
-        - event: StrategyFeeUpdated(indexed uint32,address,uint32,uint32)
+        - event: StrategyFeeUpdated(indexed uint32,address,uint32)
           handler: handleStrategyFeeUpdated
-        - event: StrategyFeeUpdateProposed(indexed uint32,address,uint32,uint32)
+        - event: StrategyFeeUpdateProposed(indexed uint32,address,uint32)
           handler: handleStrategyFeeUpdateProposed
         - event: StrategyWithdrawalProposed(indexed uint32,indexed
             address,address,uint256)
@@ -88,56 +94,6 @@ dataSources:
         - event: StrategyMetadataURIUpdated(indexed uint32,string)
           handler: handlStrategyMetadataURIUpdated
       file: ./src/based-app-manager.ts
-  - kind: ethereum
-    name: BasedAppManagerLegacy
-    network: holesky
-    source:
-      abi: BasedAppManagerLegacy
-      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
-      startBlock: 3272034
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - BAppMetadataURIUpdated
-        - BAppOptedInByStrategy
-        - ObligationCreated
-        - ObligationUpdated
-        - ObligationUpdateProposed
-        - StrategyCreated
-        - StrategyDeposit
-        - StrategyFeeUpdateProposed
-        - StrategyFeeUpdated
-        - StrategyWithdrawal
-        - StrategyWithdrawalProposed
-      abis:
-        - name: BasedAppManagerLegacy
-          file: ./abis/BasedAppManagerLegacy.json
-      eventHandlers:
-        - event: BAppOptedInByStrategy(indexed uint256,indexed
-            address,bytes,address[],uint32[])
-          handler: handleBAppOptedInByStrategy
-        - event: ObligationCreated(indexed uint256,indexed address,address,uint256)
-          handler: handleObligationCreated
-        - event: ObligationUpdateProposed(indexed uint256,indexed address,address,uint32)
-          handler: handleObligationUpdateProposed
-        - event: ObligationUpdated(indexed uint256,indexed address,address,uint256,bool)
-          handler: handleObligationUpdated
-        - event: StrategyCreated(indexed uint256,indexed address,uint32)
-          handler: handleStrategyCreated
-        - event: StrategyDeposit(indexed uint256,indexed address,address,uint256)
-          handler: handleStrategyDeposit
-        - event: StrategyFeeUpdateProposed(indexed uint256,address,uint32,uint32)
-          handler: handleStrategyFeeUpdateProposed
-        - event: StrategyFeeUpdated(indexed uint256,address,uint32,uint32)
-          handler: handleStrategyFeeUpdated
-        - event: StrategyWithdrawal(indexed uint256,indexed address,address,uint256,bool)
-          handler: handleStrategyWithdrawal
-        - event: StrategyWithdrawalProposed(indexed uint256,indexed
-            address,address,uint256)
-          handler: handleStrategyWithdrawalProposed
-      file: ./src/based-app-manager-legacy.ts
   - kind: ethereum
     name: SSVNetwork
     network: holesky
