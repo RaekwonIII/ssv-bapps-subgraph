@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: BasedAppManager
-    network: holesky
+    network: hoodi
     source:
       abi: BasedAppManager
-      address: "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317"
-      startBlock: 3272034
+      address: "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5"
+      startBlock: 900
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -96,11 +96,11 @@ dataSources:
       file: ./src/based-app-manager.ts
   - kind: ethereum
     name: SSVNetwork
-    network: holesky
+    network: hoodi
     source:
       abi: SSVNetwork
-      address: "0x0d33801785340072C452b994496B19f196b7eE15"
-      startBlock: 84599
+      address: "0x868C2789045d7ffC144635Da7D8cC0a974C58f89"
+      startBlock: 900
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

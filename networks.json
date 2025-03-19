@@ -21,7 +21,7 @@
   },
   "hoodi-prod": {
     "BasedAppManager": {
-      "address": "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5",
+      "address": "0x3F2983b813054Eba76Ae137DfA77836CA8b00ACE",
       "startBlock": 900
     },
     "SSVNetwork": {
