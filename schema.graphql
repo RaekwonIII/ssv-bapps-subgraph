@@ -10,7 +10,6 @@ type BAppToken @entity(immutable: false) {
   bApp: BApp!
   token: Bytes!
   sharedRiskLevel: BigInt!
-  sharedRiskLevelProposed: BigInt!
   totalObligatedBalance: BigInt!
 }
 
@@ -83,6 +82,14 @@ type Account @entity(immutable: false) {
 type BAppConstants @entity(immutable: false) {
   id: Bytes! # address
   _maxFeeIncrement: BigInt!
+  _feeExpireTime: BigInt!
+  _feeTimelockPeriod: BigInt!
+  _obligationExpireTime: BigInt!
+  _obligationTimelockPeriod: BigInt!
+  _strategyMaxFeeIncrement: BigInt!
+  _strategyMaxShares: BigInt!
+  _withdrawalTimelockPeriod: BigInt!
+  _withdrawalExpireTime: BigInt!
   totalAccounts: BigInt!
   totalBApps: BigInt!
   totalStrategies: BigInt!
@@ -93,6 +100,70 @@ type Delegation @entity(immutable: false) {
   delegator: Account!
   receiver: Account!
   percentage: BigInt!
+}
+
+type FeeExpireTimeUpdated @entity(immutable: true) {
+  id: Bytes!
+  feeExpireTime: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FeeTimelockPeriodUpdated @entity(immutable: true) {
+  id: Bytes!
+  feeTimelockPeriod: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ObligationExpireTimeUpdated @entity(immutable: true) {
+  id: Bytes!
+  obligationExpireTime: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ObligationTimelockPeriodUpdated @entity(immutable: true) {
+  id: Bytes!
+  obligationTimelockPeriod: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StrategyMaxFeeIncrementUpdated @entity(immutable: true) {
+  id: Bytes!
+  strategyMaxFeeIncrement: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StrategyMaxSharesUpdated @entity(immutable: true) {
+  id: Bytes!
+  strategyMaxShares: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type WithdrawalTimelockPeriodUpdated @entity(immutable: true) {
+  id: Bytes!
+  withdrawalTimelockPeriod: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type WithdrawalExpireTimeUpdated @entity(immutable: true) {
+  id: Bytes!
+  withdrawalExpireTime: BigInt!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
 type BAppMetadataURIUpdated @entity(immutable: true) {
@@ -137,29 +208,10 @@ type BAppTokensCreated @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type BAppTokensRemovalProposed @entity(immutable: true) {
-  id: Bytes!
-  bAppAddress: Bytes! # address
-  tokens: [Bytes!]! # address[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
 type BAppTokensRemoved @entity(immutable: true) {
   id: Bytes!
   bAppAddress: Bytes! # address
   tokens: [Bytes!]! # address[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type BAppTokensUpdateProposed @entity(immutable: true) {
-  id: Bytes!
-  bAppAddress: Bytes! # address
-  tokens: [Bytes!]! # address[]
-  sharedRiskLevels: [BigInt!]! # uint32[]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
@@ -263,6 +315,15 @@ type OwnershipTransferred @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
+type SlashingFundWithdrawn @entity(immutable: true) {
+  id: Bytes!
+  token: Bytes! # address
+  amount: BigInt! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
 type StrategyCreated @entity(immutable: true) {
   id: Bytes!
   strategyId: BigInt! # uint256
@@ -300,6 +361,19 @@ type StrategyFeeUpdated @entity(immutable: true) {
   strategyId: BigInt! # uint256
   owner: Bytes! # address
   fee: BigInt! # uint32
+  isFast: Boolean!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StrategySlashed @entity(immutable: true) {
+  id: Bytes!
+  strategyId: BigInt! # uint256
+  bAppAddress: Bytes! # address
+  token: Bytes! # address
+  amount: BigInt!
+  receiver: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

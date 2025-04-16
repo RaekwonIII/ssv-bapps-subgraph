@@ -41,6 +41,32 @@ dataSources:
         - name: BasedAppManager
           file: ./abis/BasedAppManager.json
       eventHandlers:
+        # protocol constants
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: FeeExpireTimeUpdated(uint32)
+          handler: handleFeeExpireTimeUpdated
+        - event: FeeTimelockPeriodUpdated(uint32)
+          handler: handleFeeTimelockPeriodUpdated
+        - event: MaxFeeIncrementSet(uint32)
+          handler: handleMaxFeeIncrementSet
+        - event: ObligationExpireTimeUpdated(uint32)
+          handler: handleObligationExpireTimeUpdated
+        - event: ObligationTimelockPeriodUpdated(uint32)
+          handler: handleObligationTimelockPeriodUpdated
+        - event: StrategyMaxFeeIncrementUpdated(uint32)
+          handler: handleStrategyMaxFeeIncrementUpdated
+        - event: StrategyMaxSharesUpdated(uint256)
+          handler: handleStrategyMaxSharesUpdated
+        - event: WithdrawalTimelockPeriodUpdated(uint32)
+          handler: handleWithdrawalTimelockPeriodUpdated
+        - event: WithdrawalExpireTimeUpdated(uint32)
+          handler: handleWithdrawalExpireTimeUpdated
+        # slashing
+        - event: SlashingFundWithdrawn(address,uint256)
+          handler: handleSlashingFundWithdrawn
+
+        # Bapps
         - event: BAppMetadataURIUpdated(indexed address,string)
           handler: handleBAppMetadataURIUpdated
         - event: BAppOptedInByStrategy(indexed uint32,indexed
@@ -50,12 +76,8 @@ dataSources:
           handler: handleBAppRegistered
         - event: BAppTokensCreated(indexed address,address[],uint32[])
           handler: handleBAppTokensCreated
-        - event: BAppTokensUpdateProposed(indexed address,address[],uint32[])
-          handler: handleBAppTokensUpdateProposed
         - event: BAppTokensUpdated(indexed address,address[],uint32[])
           handler: handleBAppTokensUpdated
-        - event: BAppTokensRemovalProposed(indexed address,address[])
-          handler: handleBAppTokensRemovalProposed
         - event: BAppTokensRemoved(indexed address,address[])
           handler: handleBAppTokensRemoved
         - event: DelegationCreated(indexed address,indexed address,uint32)
@@ -64,26 +86,26 @@ dataSources:
           handler: handleDelegationRemoved
         - event: DelegationUpdated(indexed address,indexed address,uint32)
           handler: handleDelegationUpdated
-        - event: Initialized(uint64)
-          handler: handleInitialized
-        - event: MaxFeeIncrementSet(uint32)
-          handler: handleMaxFeeIncrementSet
         - event: ObligationCreated(indexed uint32,indexed address,address,uint32)
           handler: handleObligationCreated
         - event: ObligationUpdateProposed(indexed uint32,indexed address,address,uint32)
           handler: handleObligationUpdateProposed
-        - event: ObligationUpdated(indexed uint32,indexed address,address,uint32,bool)
+        - event: ObligationUpdated(indexed uint32,indexed address,address,uint32)
           handler: handleObligationUpdated
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
+
+        # strategies
         - event: StrategyCreated(indexed uint32,indexed address,uint32,string)
           handler: handleStrategyCreated
         - event: StrategyDeposit(indexed uint32,indexed address,address,uint256)
           handler: handleStrategyDeposit
-        - event: StrategyFeeUpdated(indexed uint32,address,uint32)
+        - event: StrategyFeeUpdated(indexed uint32,address,uint32,bool)
           handler: handleStrategyFeeUpdated
         - event: StrategyFeeUpdateProposed(indexed uint32,address,uint32)
           handler: handleStrategyFeeUpdateProposed
+        - event: StrategySlashed(indexed uint32,indexed address,address,uint256,address)
+          handler: handleStrategySlashed
         - event: StrategyWithdrawalProposed(indexed uint32,indexed
             address,address,uint256)
           handler: handleStrategyWithdrawalProposed
