@@ -11,7 +11,7 @@
   },
   "hoodi-stage": {
     "BasedAppManager": {
-      "address": "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5",
+      "address": "0xd90Ee22184148835b56150CDB69C9Ec258878581",
       "startBlock": 900
     },
     "SSVNetwork": {
@@ -31,7 +31,7 @@
   },
   "holesky": {
     "BasedAppManager": {
-      "address": "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317",
+      "address": "0x496E0EAc4925A5E848D0a449FEAF76c0CEEEA07d",
       "startBlock": 3272034
     },
     "SSVNetwork": {
@@ -41,7 +41,7 @@
   },
   "holesky-prod": {
     "BasedAppManager": {
-      "address": "0x496E0EAc4925A5E848D0a449FEAF76c0CEEEA07d",
+      "address": "0x9B3345F3B1Ce2d8655FC4B6e2ed39322d52aA317",
       "startBlock": 3276190
     },
     "SSVNetwork": {

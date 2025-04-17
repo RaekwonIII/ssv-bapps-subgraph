@@ -41,7 +41,6 @@ dataSources:
         - name: BasedAppManager
           file: ./abis/BasedAppManager.json
       eventHandlers:
-        # protocol constants
         - event: Initialized(uint64)
           handler: handleInitialized
         - event: FeeExpireTimeUpdated(uint32)
@@ -62,11 +61,8 @@ dataSources:
           handler: handleWithdrawalTimelockPeriodUpdated
         - event: WithdrawalExpireTimeUpdated(uint32)
           handler: handleWithdrawalExpireTimeUpdated
-        # slashing
         - event: SlashingFundWithdrawn(address,uint256)
           handler: handleSlashingFundWithdrawn
-
-        # Bapps
         - event: BAppMetadataURIUpdated(indexed address,string)
           handler: handleBAppMetadataURIUpdated
         - event: BAppOptedInByStrategy(indexed uint32,indexed
@@ -94,8 +90,6 @@ dataSources:
           handler: handleObligationUpdated
         - event: OwnershipTransferred(indexed address,indexed address)
           handler: handleOwnershipTransferred
-
-        # strategies
         - event: StrategyCreated(indexed uint32,indexed address,uint32,string)
           handler: handleStrategyCreated
         - event: StrategyDeposit(indexed uint32,indexed address,address,uint256)

@@ -137,12 +137,19 @@ export function handleFeeExpireTimeUpdated(event:FeeExpireTimeUpdatedEvent): voi
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._feeExpireTime = event.params.feeExpireTime;
   bAppConstants.save();
@@ -165,12 +172,19 @@ export function handleFeeTimelockPeriodUpdated(event:FeeTimelockPeriodUpdatedEve
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._feeTimelockPeriod = event.params.feeTimelockPeriod;
   bAppConstants.save();
@@ -193,12 +207,19 @@ export function handleObligationExpireTimeUpdated(event:ObligationExpireTimeUpda
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._obligationExpireTime = event.params.obligationExpireTime;
   bAppConstants.save();
@@ -221,12 +242,19 @@ export function handleObligationTimelockPeriodUpdated(event:ObligationTimelockPe
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._obligationTimelockPeriod = event.params.obligationTimelockPeriod;
   bAppConstants.save();
@@ -249,12 +277,19 @@ export function handleStrategyMaxFeeIncrementUpdated(event:StrategyMaxFeeIncreme
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._strategyMaxFeeIncrement = event.params.maxFeeIncrement;
   bAppConstants.save();
@@ -277,12 +312,19 @@ export function handleStrategyMaxSharesUpdated(event:StrategyMaxSharesUpdatedEve
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._strategyMaxShares = event.params.maxShares;
   bAppConstants.save();
@@ -305,12 +347,19 @@ export function handleWithdrawalTimelockPeriodUpdated(event:WithdrawalTimelockPe
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._withdrawalTimelockPeriod = event.params.withdrawalTimelockPeriod;
   bAppConstants.save();
@@ -333,12 +382,19 @@ export function handleWithdrawalExpireTimeUpdated(event:WithdrawalExpireTimeUpda
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._feeExpireTime = BigInt.fromI32(500);
   }
   bAppConstants._withdrawalExpireTime = event.params.withdrawalExpireTime;
   bAppConstants.save();
@@ -465,12 +521,19 @@ export function handleBAppRegistered(event: BAppRegisteredEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalBApps = bAppConstants.totalBApps.plus(BigInt.fromI32(1));
   bAppConstants.save();
@@ -621,12 +684,19 @@ export function handleDelegationCreated(event: DelegationCreatedEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
@@ -1058,12 +1128,19 @@ export function handleStrategyCreated(event: StrategyCreatedEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)
@@ -1110,12 +1187,19 @@ export function handleStrategyDeposit(event: StrategyDepositEvent): void {
     log.error(
       "Trying to adjust total Accounts, but constant entry does not exist, and cannot be created",
       []
-    );  
+    );
     bAppConstants = new BAppConstants(event.address);
+    bAppConstants._feeExpireTime = BigInt.fromI32(1);
+    bAppConstants._feeTimelockPeriod = BigInt.fromI32(7);
+    bAppConstants._obligationExpireTime = BigInt.fromI32(3);
+    bAppConstants._obligationTimelockPeriod = BigInt.fromI32(14);
+    bAppConstants._strategyMaxFeeIncrement = BigInt.fromI32(500);
+    bAppConstants._strategyMaxShares = BigInt.fromI32(10000);
+    bAppConstants._withdrawalExpireTime = BigInt.fromI32(3);
+    bAppConstants._withdrawalTimelockPeriod = BigInt.fromI32(14);
     bAppConstants.totalAccounts = BigInt.zero();
     bAppConstants.totalBApps = BigInt.zero();
     bAppConstants.totalStrategies = BigInt.zero();
-    bAppConstants._maxFeeIncrement = BigInt.fromI32(500);
   }
   bAppConstants.totalAccounts = bAppConstants.totalAccounts.plus(
     BigInt.fromI32(newAccountsCount)

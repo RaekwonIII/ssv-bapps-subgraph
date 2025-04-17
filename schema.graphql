@@ -81,15 +81,14 @@ type Account @entity(immutable: false) {
 
 type BAppConstants @entity(immutable: false) {
   id: Bytes! # address
-  _maxFeeIncrement: BigInt!
   _feeExpireTime: BigInt!
   _feeTimelockPeriod: BigInt!
   _obligationExpireTime: BigInt!
   _obligationTimelockPeriod: BigInt!
   _strategyMaxFeeIncrement: BigInt!
   _strategyMaxShares: BigInt!
-  _withdrawalTimelockPeriod: BigInt!
   _withdrawalExpireTime: BigInt!
+  _withdrawalTimelockPeriod: BigInt!
   totalAccounts: BigInt!
   totalBApps: BigInt!
   totalStrategies: BigInt!
