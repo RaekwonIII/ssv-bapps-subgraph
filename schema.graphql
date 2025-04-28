@@ -371,7 +371,7 @@ type StrategySlashed @entity(immutable: true) {
   strategyId: BigInt! # uint256
   bAppAddress: Bytes! # address
   token: Bytes! # address
-  amount: BigInt!
+  percentage: BigInt!
   receiver: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!

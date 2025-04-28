@@ -1,18 +1,18 @@
 {
   "hoodi": {
     "BasedAppManager": {
-      "address": "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5",
+      "address": "0xc7fCFeEc5FB9962bDC2234A7a25dCec739e27f9f",
       "startBlock": 900
     },
     "SSVNetwork": {
-      "address": "0x868C2789045d7ffC144635Da7D8cC0a974C58f89",
+      "address": "0x58410Bef803ECd7E63B23664C586A6DB72DAf59c",
       "startBlock": 900
     }
   },
   "hoodi-stage": {
     "BasedAppManager": {
-      "address": "0xd90Ee22184148835b56150CDB69C9Ec258878581",
-      "startBlock": 900
+      "address": "0x40d959B95e7c56962D6d388d87921c03734b9C2C",
+      "startBlock": 259313
     },
     "SSVNetwork": {
       "address": "0x0aaace4e8affc47c6834171c88d342a4abd8f105",
@@ -21,7 +21,7 @@
   },
   "hoodi-prod": {
     "BasedAppManager": {
-      "address": "0x3F2983b813054Eba76Ae137DfA77836CA8b00ACE",
+      "address": "0xc7fCFeEc5FB9962bDC2234A7a25dCec739e27f9f",
       "startBlock": 900
     },
     "SSVNetwork": {

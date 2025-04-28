@@ -75,6 +75,7 @@
     "type": "error"
   },
   { "inputs": [], "name": "RequestTimeExpired", "type": "error" },
+  { "inputs": [], "name": "SlashingDisabled", "type": "error" },
   {
     "inputs": [
       { "internalType": "uint8", "name": "moduleId", "type": "uint8" }
@@ -105,6 +106,8 @@
     "name": "UUPSUnsupportedProxiableUUID",
     "type": "error"
   },
+  { "inputs": [], "name": "WithdrawTransferFailed", "type": "error" },
+  { "inputs": [], "name": "WithdrawalsDisabled", "type": "error" },
   { "inputs": [], "name": "ZeroAddressNotAllowed", "type": "error" },
   {
     "anonymous": false,
@@ -131,7 +134,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "bAppAddress",
+        "name": "bApp",
         "type": "address"
       },
       {
@@ -187,7 +190,7 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "bAppAddress",
+        "name": "bApp",
         "type": "address"
       },
       {
@@ -218,64 +221,22 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "bAppAddress",
+        "name": "bApp",
         "type": "address"
       },
       {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          {
+            "internalType": "uint32",
+            "name": "sharedRiskLevel",
+            "type": "uint32"
+          }
+        ],
         "indexed": false,
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32[]",
-        "name": "sharedRiskLevels",
-        "type": "uint32[]"
-      }
-    ],
-    "name": "BAppTokensCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bAppAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
-      }
-    ],
-    "name": "BAppTokensRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bAppAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "address[]",
-        "name": "tokens",
-        "type": "address[]"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint32[]",
-        "name": "sharedRiskLevels",
-        "type": "uint32[]"
+        "internalType": "struct ICore.TokenConfig[]",
+        "name": "tokenConfigs",
+        "type": "tuple[]"
       }
     ],
     "name": "BAppTokensUpdated",
@@ -348,6 +309,19 @@
       }
     ],
     "name": "DelegationUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "disabledFeatures",
+        "type": "uint32"
+      }
+    ],
+    "name": "DisabledFeaturesUpdated",
     "type": "event"
   },
   {
@@ -719,31 +693,6 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "uint32",
-        "name": "strategyId",
-        "type": "uint32"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "bApp",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "StrategyFrozen",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
         "indexed": false,
         "internalType": "uint32",
         "name": "maxFeeIncrement",
@@ -808,9 +757,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
+        "internalType": "uint32",
+        "name": "percentage",
+        "type": "uint32"
       },
       {
         "indexed": false,
@@ -894,6 +843,19 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "uint32",
+        "name": "tokenUpdateTimelockPeriod",
+        "type": "uint32"
+      }
+    ],
+    "name": "TokenUpdateTimelockPeriodUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "implementation",
@@ -937,15 +899,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      { "internalType": "address", "name": "bApp", "type": "address" }
-    ],
-    "name": "_isBApp",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "acceptOwnership",
     "outputs": [],
@@ -969,8 +922,10 @@
     ],
     "name": "bAppTokens",
     "outputs": [
-      { "internalType": "uint32", "name": "value", "type": "uint32" },
-      { "internalType": "bool", "name": "isSet", "type": "bool" }
+      { "internalType": "uint32", "name": "currentValue", "type": "uint32" },
+      { "internalType": "bool", "name": "isSet", "type": "bool" },
+      { "internalType": "uint32", "name": "pendingValue", "type": "uint32" },
+      { "internalType": "uint32", "name": "effectTime", "type": "uint32" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1041,6 +996,13 @@
     "name": "depositETH",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "disabledFeatures",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1172,6 +1134,7 @@
       },
       {
         "components": [
+          { "internalType": "uint256", "name": "maxShares", "type": "uint256" },
           {
             "internalType": "uint32",
             "name": "feeTimelockPeriod",
@@ -1204,10 +1167,19 @@
           },
           {
             "internalType": "uint32",
+            "name": "tokenUpdateTimelockPeriod",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
             "name": "maxFeeIncrement",
             "type": "uint32"
           },
-          { "internalType": "uint256", "name": "maxShares", "type": "uint256" }
+          {
+            "internalType": "uint32",
+            "name": "disabledFeatures",
+            "type": "uint32"
+          }
         ],
         "internalType": "struct ProtocolStorageLib.Data",
         "name": "config",
@@ -1297,6 +1269,17 @@
     "name": "optInToBApp",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" }
+    ],
+    "name": "ownedStrategies",
+    "outputs": [
+      { "internalType": "uint32[]", "name": "strategyIds", "type": "uint32[]" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1424,7 +1407,7 @@
       { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
       { "internalType": "address", "name": "bApp", "type": "address" },
       { "internalType": "address", "name": "token", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "internalType": "uint32", "name": "percentage", "type": "uint32" },
       { "internalType": "bytes", "name": "data", "type": "bytes" }
     ],
     "name": "slash",
@@ -1449,8 +1432,7 @@
     "name": "strategies",
     "outputs": [
       { "internalType": "address", "name": "strategyOwner", "type": "address" },
-      { "internalType": "uint32", "name": "fee", "type": "uint32" },
-      { "internalType": "uint32", "name": "freezingTime", "type": "uint32" }
+      { "internalType": "uint32", "name": "fee", "type": "uint32" }
     ],
     "stateMutability": "view",
     "type": "function"
@@ -1497,6 +1479,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "tokenUpdateTimelockPeriod",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       { "internalType": "address", "name": "delegator", "type": "address" }
     ],
@@ -1534,10 +1523,40 @@
   },
   {
     "inputs": [
+      {
+        "components": [
+          { "internalType": "address", "name": "token", "type": "address" },
+          {
+            "internalType": "uint32",
+            "name": "sharedRiskLevel",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct ICore.TokenConfig[]",
+        "name": "tokenConfigs",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "updateBAppsTokens",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
       { "internalType": "address", "name": "receiver", "type": "address" },
       { "internalType": "uint32", "name": "percentage", "type": "uint32" }
     ],
     "name": "updateDelegatedBalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint32", "name": "disabledFeatures", "type": "uint32" }
+    ],
+    "name": "updateDisabledFeatures",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -1616,6 +1635,13 @@
   },
   {
     "inputs": [{ "internalType": "uint32", "name": "value", "type": "uint32" }],
+    "name": "updateTokenUpdateTimelockPeriod",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint32", "name": "value", "type": "uint32" }],
     "name": "updateWithdrawalExpireTime",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -1640,16 +1666,6 @@
     "name": "upgradeToAndCall",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "uint32", "name": "strategyId", "type": "uint32" },
-      { "internalType": "address", "name": "token", "type": "address" }
-    ],
-    "name": "usedTokens",
-    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
-    "stateMutability": "view",
     "type": "function"
   },
   {

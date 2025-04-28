@@ -9,7 +9,7 @@ dataSources:
     network: hoodi
     source:
       abi: BasedAppManager
-      address: "0x5217C9034048B1Fa9Fb1e300F94fCd7002138Ea5"
+      address: "0xc7fCFeEc5FB9962bDC2234A7a25dCec739e27f9f"
       startBlock: 900
     mapping:
       kind: ethereum/events
@@ -70,12 +70,8 @@ dataSources:
           handler: handleBAppOptedInByStrategy
         - event: BAppRegistered(indexed address,address[],uint32[],string)
           handler: handleBAppRegistered
-        - event: BAppTokensCreated(indexed address,address[],uint32[])
-          handler: handleBAppTokensCreated
-        - event: BAppTokensUpdated(indexed address,address[],uint32[])
+        - event: BAppTokensUpdated(indexed address,(address,uint32)[])
           handler: handleBAppTokensUpdated
-        - event: BAppTokensRemoved(indexed address,address[])
-          handler: handleBAppTokensRemoved
         - event: DelegationCreated(indexed address,indexed address,uint32)
           handler: handleDelegationCreated
         - event: DelegationRemoved(indexed address,indexed address)
@@ -98,7 +94,7 @@ dataSources:
           handler: handleStrategyFeeUpdated
         - event: StrategyFeeUpdateProposed(indexed uint32,address,uint32)
           handler: handleStrategyFeeUpdateProposed
-        - event: StrategySlashed(indexed uint32,indexed address,address,uint256,address)
+        - event: StrategySlashed(indexed uint32,indexed address,address,uint32,address)
           handler: handleStrategySlashed
         - event: StrategyWithdrawalProposed(indexed uint32,indexed
             address,address,uint256)
@@ -115,7 +111,7 @@ dataSources:
     network: hoodi
     source:
       abi: SSVNetwork
-      address: "0x868C2789045d7ffC144635Da7D8cC0a974C58f89"
+      address: "0x58410Bef803ECd7E63B23664C586A6DB72DAf59c"
       startBlock: 900
     mapping:
       kind: ethereum/events
